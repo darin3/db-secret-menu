@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { X, Send, CheckCircle, AlertCircle } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { X, Send, CheckCircle, AlertCircle, ChevronDown } from "lucide-react";
 
 const TYPES = [
-  { value: "drink_issue", label: "Menu Correction", icon: "🥤" },
+  { value: "drink_issue", label: "Drink Menu", icon: "🥤" },
   { value: "suggestion", label: "Suggestion", icon: "💡" },
   { value: "bug", label: "Bug / Other", icon: "🐛" },
 ];
 
 const CATEGORIES_BY_TYPE = {
-  drink_issue: ["Wrong Recipe/Info", "Wrong Name", "Add a Drink", "Drink Notes", "Discontinued Drink"],
+  drink_issue: ["Fix a Drink", "Add a Drink", "Other Details", "Discontinued"],
   suggestion: ["New Feature", "Quiz Feedback", "UI Improvement"],
   bug: ["Bug Report", "General Feedback"],
 };
 
 export default function FeedbackModal({ open, onClose }) {
-  const [type, setType] = useState("");
+  const [type, setType] = useState("drink_issue");
   const [category, setCategory] = useState("");
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const [summary, setSummary] = useState("");
   const [detail, setDetail] = useState("");
   const [drinkName, setDrinkName] = useState("");
@@ -37,14 +39,28 @@ export default function FeedbackModal({ open, onClose }) {
   // Close on Escape
   useEffect(() => {
     if (!open) return;
+    setType("drink_issue"); // Default to Drink Menu when opened
     const handleKey = (e) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [open, onClose]);
 
+  // Click outside to close custom category dropdown
+  useEffect(() => {
+    if (!categoryOpen) return;
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setCategoryOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [categoryOpen]);
+
   const resetForm = () => {
-    setType("");
+    setType("drink_issue");
     setCategory("");
+    setCategoryOpen(false);
     setSummary("");
     setDetail("");
     setDrinkName("");
@@ -110,23 +126,23 @@ export default function FeedbackModal({ open, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       onClick={handleClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300" />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-lg bg-[#111] border border-white/10 rounded-2xl shadow-2xl animate-fade-in overflow-hidden"
+        className="relative w-full max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-xl shadow-black/50 overflow-hidden flex flex-col max-h-full animate-fade-in-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4">
-          <h2 className="text-lg font-bold text-white">Send Feedback</h2>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 shrink-0 bg-[#0a0a0a]">
+          <h2 className="text-lg font-bold text-white tracking-tight">Send Feedback</h2>
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/20"
           >
             <X size={18} />
           </button>
@@ -145,23 +161,22 @@ export default function FeedbackModal({ open, onClose }) {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
+          <form onSubmit={handleSubmit} className="px-6 py-6 space-y-5 overflow-y-auto">
             {/* Type selector */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">What kind of feedback?</label>
+              <label className="block text-sm font-medium text-gray-400 mb-2">What kind of feedback?</label>
               <div className="flex gap-2">
                 {TYPES.map((t) => (
                   <button
                     key={t.value}
                     type="button"
-                    onClick={() => { setType(t.value); setCategory(""); setDrinkName(""); setFlavors(""); }}
-                    className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200 border ${
-                      type === t.value
-                        ? "bg-blue-500/20 border-blue-500/50 text-blue-300"
-                        : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white"
-                    }`}
+                    onClick={() => { setType(t.value); setCategory(""); setCategoryOpen(false); setDrinkName(""); setFlavors(""); }}
+                    className={`flex-1 py-3 px-2 rounded-xl text-[13px] sm:text-sm font-medium transition-all duration-200 border flex flex-col items-center justify-center gap-1.5 ${type === t.value
+                      ? "bg-blue-500/10 border-blue-500/50 text-blue-400 bg-opacity-90 shadow-sm scale-[1.02]"
+                      : "bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white hover:border-white/10"
+                      }`}
                   >
-                    <span className="block text-base mb-0.5">{t.icon}</span>
+                    <span className="block text-xl sm:text-2xl mb-0.5">{t.icon}</span>
                     {t.label}
                   </button>
                 ))}
@@ -169,54 +184,72 @@ export default function FeedbackModal({ open, onClose }) {
             </div>
 
             {/* Category (contextual based on type) */}
-            {type && (
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Category</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  style={{ colorScheme: "dark" }}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer"
+            {type && CATEGORIES_BY_TYPE[type] && (
+              <div className="relative" ref={dropdownRef}>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Category</label>
+                <button
+                  type="button"
+                  onClick={() => setCategoryOpen(!categoryOpen)}
+                  className="w-full flex items-center justify-between bg-[#1a1a1a] border border-white/10 hover:border-white/20 rounded-xl px-4 py-3 text-left text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer"
                 >
-                  <option value="" style={{ background: "#1a1a1a", color: "#fff" }}>Select a category...</option>
-                  {CATEGORIES_BY_TYPE[type].map((c) => (
-                    <option key={c} value={c} style={{ background: "#1a1a1a", color: "#fff" }}>{c}</option>
-                  ))}
-                </select>
+                  <span className={category ? "text-white" : "text-gray-500"}>
+                    {category || "Select a category..."}
+                  </span>
+                  <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${categoryOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {categoryOpen && (
+                  <ul className="absolute z-10 w-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl shadow-black/50 max-h-60 overflow-y-auto animate-fade-in divide-y divide-white/5">
+                    {CATEGORIES_BY_TYPE[type].map((c) => (
+                      <li key={c}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCategory(c);
+                            setCategoryOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-white/10 ${category === c ? "text-blue-400 bg-blue-500/10" : "text-gray-300"}`}
+                        >
+                          {c}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
 
             {/* Drink fields (contextual) */}
             {type === "drink_issue" && (
-              <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Which drink?</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Which drink?</label>
                   <input
                     type="text"
                     value={drinkName}
                     onChange={(e) => setDrinkName(e.target.value)}
                     placeholder="e.g. Cosmic Brownie"
                     maxLength={100}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50"
+                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-gray-600 transition-all duration-200 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">What flavors? (comma-separated)</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">What flavors?</label>
                   <input
                     type="text"
                     value={flavors}
                     onChange={(e) => setFlavors(e.target.value)}
                     placeholder="e.g. Chocolate, Caramel"
                     maxLength={200}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50"
+                    className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-gray-600 transition-all duration-200 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
-              </>
+              </div>
             )}
 
             {/* Summary */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
+              <label className="block text-sm font-medium text-gray-400 mb-2">
                 Summary <span className="text-red-400">*</span>
               </label>
               <input
@@ -226,13 +259,13 @@ export default function FeedbackModal({ open, onClose }) {
                 placeholder="Brief description of the issue or suggestion"
                 maxLength={200}
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50"
+                className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-gray-600 transition-all duration-200 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
 
             {/* Details */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
+              <label className="block text-sm font-medium text-gray-400 mb-2">
                 {type === "drink_issue" ? "Additional Notes" : "Details"}
               </label>
               <textarea
@@ -241,50 +274,52 @@ export default function FeedbackModal({ open, onClose }) {
                 placeholder="Any additional context, steps to reproduce, or specifics..."
                 rows={3}
                 maxLength={2000}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 resize-none"
+                className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-gray-600 transition-all duration-200 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 resize-none"
               />
             </div>
 
             {/* Contact email */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
-                Email <span className="text-gray-600">(optional, for follow-up)</span>
+              <label className="block text-sm font-medium text-gray-400 mb-2">
+                Email <span className="text-gray-600 font-normal">(optional, for follow-up)</span>
               </label>
               <input
                 type="email"
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50"
+                className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-gray-600 transition-all duration-200 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
               />
             </div>
 
             {/* Error message */}
             {status === "error" && (
               <div className="flex items-center gap-2 text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
-                <AlertCircle size={16} />
-                {errorMsg || "Something went wrong. Please try again."}
+                <AlertCircle size={16} className="shrink-0" />
+                <p>{errorMsg || "Something went wrong. Please try again."}</p>
               </div>
             )}
 
             {/* Submit */}
-            <button
-              type="submit"
-              disabled={!type || !summary.trim() || status === "submitting"}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all duration-200 bg-gradient-to-r from-blue-500 to-sky-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
-            >
-              {status === "submitting" ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Send size={16} />
-                  Submit Feedback
-                </>
-              )}
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={!type || !summary.trim() || status === "submitting"}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 bg-gradient-to-r from-blue-500 to-sky-500 text-white hover:opacity-90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:opacity-40"
+              >
+                {status === "submitting" ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    Submit Feedback
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         )}
       </div>
