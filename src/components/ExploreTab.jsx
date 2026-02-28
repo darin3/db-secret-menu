@@ -169,7 +169,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
 
             {/* Grid */}
             <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 justify-center mt-2">
-                {filtered.slice(0, 10).map(d => (
+                {filtered.map(d => (
                     <DrinkCard key={d.name} drink={d} open={openCard === d.name} onToggle={() => setOpenCard(prev => prev === d.name ? null : d.name)} />
                 ))}
             </div>
