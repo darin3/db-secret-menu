@@ -77,7 +77,7 @@ export default function App() {
           <nav className="flex flex-wrap justify-center gap-3 sm:gap-4">
             {navLink("/", "Explore", Coffee, true)}
             {navLink("/discover", "Pick My Drink", Dices)}
-            {navLink("/flavors", "Flavor Map", Map)}
+            {navLink("/map", "Flavor Map", Map)}
           </nav>
         </header>
 
@@ -87,7 +87,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<ExploreTab initialFlavors={exploreFlavorSearch} onInitialFlavorsConsumed={() => setExploreFlavorSearch(null)} resetKey={resetKey} />} />
               <Route path="/discover" element={<MoodTab />} />
-              <Route path="/flavors" element={<FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />} />
+              <Route path="/map" element={<FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
