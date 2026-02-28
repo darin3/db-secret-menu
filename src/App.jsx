@@ -41,7 +41,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30">
       {/* Background Decor — hidden on mobile (kills iOS Safari perf) */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 hidden md:block">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 hidden lg:block">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/5 rounded-full blur-[120px]" />
         <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] bg-sky-600/5 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] bg-cyan-600/5 rounded-full blur-[150px]" />
