@@ -149,10 +149,10 @@ export const FLAVOR_COLORS = {
   Peach: "#FABB51", "Passion Fruit": "#E17055", Pomegranate: "#C0392B", Kiwi: "#7BED9F",
   Lime: "#2ED573", Orange: "#FF9F43", Grapefruit: "#F8A5C2", Watermelon: "#FF6B81",
   Banana: "#F6E58D", Cherry: "#DC143C", Coconut: "#00D2D3", "Apple Smoothie Mix": "#6AB04C", Mango: "#FFB142",
-  "White Chocolate": "#F5F0E1", "Dark Chocolate": "#D2956B", "Chocolate Mac": "#8D6748",
-  Caramel: "#D4A259", "Salted Caramel": "#C49A52", Mocha: "#6D4C41", Cupcake: "#FF9FF3",
-  Almond: "#C8A67E", Hazelnut: "#A67C52", "Almond Roca": "#B8860B", Vanilla: "#F3E9DC",
-  Cinnamon: "#D35400", Chai: "#A0522D", "Irish Cream": "#7B6B4E", Peppermint: "#00E676",
+  "White Chocolate": "#F5F0E1", "Dark Chocolate": "#967259", "Chocolate Mac": "#DEB887",
+  Caramel: "#D4A259", "Salted Caramel": "#C49A52", Mocha: "#A67C52", Cupcake: "#FF9FF3",
+  Almond: "#DCCBB7", Hazelnut: "#D2956B", "Almond Roca": "#B8860B", Vanilla: "#F3E9DC",
+  Cinnamon: "#D35400", Chai: "#C48A2A", "Irish Cream": "#C9B99A", Peppermint: "#00E676",
   "Creme de Menthe": "#00C853", "White Coffee": "#D7CCC8",
 };
 

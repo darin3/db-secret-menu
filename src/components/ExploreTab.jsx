@@ -118,7 +118,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
                         <FilterChip
                             active={selBase === 'coffee'}
                             inactive={selBase !== null && selBase !== 'coffee'}
-                            color="#EAB543" // Indulgent/Coffee vibe color
+                            color="#A67C52"
                             onClick={() => setSelBase(selBase === 'coffee' ? null : 'coffee')}
                             label="Latte / Chai / Cocoa"
                             icon={CoffeeIcon}
@@ -126,7 +126,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
                         <FilterChip
                             active={selBase === 'rebel'}
                             inactive={selBase !== null && selBase !== 'rebel'}
-                            color="#00CEC9" // Fusion vibe color as it's zesty
+                            color="#C084FC"
                             onClick={() => setSelBase(selBase === 'rebel' ? null : 'rebel')}
                             label="Rebel / Refresher"
                             icon={Palmtree}
@@ -198,7 +198,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 justify-center mt-2">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-4 justify-center mt-2">
                 {filtered.map(d => (
                     <DrinkCard key={d.name} drink={d} open={openCard === d.name} onToggle={() => setOpenCard(prev => prev === d.name ? null : d.name)} />
                 ))}
