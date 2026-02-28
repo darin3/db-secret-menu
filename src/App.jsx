@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { DRINKS } from "./data/drinks";
 import ExploreTab from "./components/ExploreTab";
 import MoodTab from "./components/MoodTab";
@@ -78,6 +79,7 @@ export default function App() {
           <p>Not affiliated with Dutch Bros Coffee. Just built by fans, for fans.</p>
         </footer>
       </div>
+      <SpeedInsights />
     </div>
   );
 }
