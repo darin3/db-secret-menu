@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { getDrinkVibe, VIBE_META, FLAVOR_COLORS, isCoreFlavor } from '../data/drinks';
+import { getDrinkVibe, VIBE_META, FLAVOR_COLORS, isCoreFlavor, FRUITY, SWEET } from '../data/drinks';
 import {
     Palmtree,
     Cherry,
@@ -40,7 +40,15 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
         } else if (["tropical", "fruity"].includes(vibe)) {
             baseTypes = ["rebel", "iced lemonade", "soda", "iced tea"];
         } else if (vibe === "fusion") {
-            baseTypes = ["rebel", "freeze", "latte", "iced lemonade"];
+            // Check if drink is fruit-forward — if so, skip coffee bases
+            const hasAnyFruit = drink.flavors.some(f => f.includes("Any Fruit"));
+            const fruitishCount = drink.flavors.filter(f => FRUITY.includes(f) || f.includes("Float")).length;
+            const sweetCount = drink.flavors.filter(f => SWEET.includes(f)).length;
+            if (hasAnyFruit || fruitishCount > sweetCount) {
+                baseTypes = ["rebel", "freeze", "iced lemonade"];
+            } else {
+                baseTypes = ["latte", "freeze", "rebel", "iced lemonade"];
+            }
         } else {
             baseTypes = ["latte", "freeze", "chai"];
         }
