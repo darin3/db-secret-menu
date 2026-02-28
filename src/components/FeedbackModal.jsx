@@ -2,18 +2,16 @@ import React, { useState, useEffect } from "react";
 import { X, Send, CheckCircle, AlertCircle } from "lucide-react";
 
 const TYPES = [
-  { value: "drink_issue", label: "Drink Issue", icon: "🥤" },
-  { value: "suggestion", label: "Suggestion", icon: "💡" },
-  { value: "bug", label: "Bug / Other", icon: "🐛" },
+  { value: "drink_issue", label: "Drink Correction", icon: "🥤" },
+  { value: "bug", label: "Bug Report", icon: "🐛" },
+  { value: "suggestion", label: "Suggestion / Other", icon: "💡" },
 ];
 
-const CATEGORIES = [
-  "Drink Correction",
-  "Missing Flavor/Drink",
-  "Feature Suggestion",
-  "Bug Report",
-  "Other",
-];
+const CATEGORIES_BY_TYPE = {
+  drink_issue: ["Wrong Recipe/Info", "Wrong Name", "Discontinued Drink", "Missing Drink"],
+  bug: ["Display Issue", "Broken Feature", "Performance Issue"],
+  suggestion: ["New Feature", "Add a Drink", "UI Improvement", "Other"],
+};
 
 export default function FeedbackModal({ open, onClose }) {
   const [type, setType] = useState("");
@@ -139,7 +137,7 @@ export default function FeedbackModal({ open, onClose }) {
                   <button
                     key={t.value}
                     type="button"
-                    onClick={() => setType(t.value)}
+                    onClick={() => { setType(t.value); setCategory(""); }}
                     className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200 border ${
                       type === t.value
                         ? "bg-blue-500/20 border-blue-500/50 text-blue-300"
@@ -153,20 +151,22 @@ export default function FeedbackModal({ open, onClose }) {
               </div>
             </div>
 
-            {/* Category */}
-            <div>
-              <label className="block text-sm text-gray-400 mb-2">Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer"
-              >
-                <option value="">Select a category...</option>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
+            {/* Category (contextual based on type) */}
+            {type && (
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Category</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer"
+                >
+                  <option value="">Select a category...</option>
+                  {CATEGORIES_BY_TYPE[type].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Summary */}
             <div>

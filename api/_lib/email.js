@@ -1,9 +1,9 @@
 import nodemailer from "nodemailer";
 
 const TYPE_COLORS = {
-  drink_issue: { bg: "#e74c3c", label: "Drink Issue" },
-  suggestion: { bg: "#3498db", label: "Suggestion" },
-  bug: { bg: "#e67e22", label: "Bug" },
+  drink_issue: { bg: "#e74c3c", label: "Drink Correction" },
+  suggestion: { bg: "#3498db", label: "Suggestion / Other" },
+  bug: { bg: "#e67e22", label: "Bug Report" },
   other: { bg: "#95a5a6", label: "Other" },
 };
 
