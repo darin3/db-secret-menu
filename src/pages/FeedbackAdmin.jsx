@@ -5,9 +5,9 @@ import {
 } from "lucide-react";
 
 const TYPE_META = {
-  drink_issue: { label: "Drink Correction", icon: AlertCircle, color: "text-red-400", bg: "bg-red-400/10" },
-  suggestion: { label: "Suggestion / Other", icon: Lightbulb, color: "text-blue-400", bg: "bg-blue-400/10" },
-  bug: { label: "Bug Report", icon: Bug, color: "text-orange-400", bg: "bg-orange-400/10" },
+  drink_issue: { label: "Menu Correction", icon: AlertCircle, color: "text-red-400", bg: "bg-red-400/10" },
+  suggestion: { label: "Suggestion", icon: Lightbulb, color: "text-blue-400", bg: "bg-blue-400/10" },
+  bug: { label: "Bug / Other", icon: Bug, color: "text-orange-400", bg: "bg-orange-400/10" },
   other: { label: "Other", icon: HelpCircle, color: "text-gray-400", bg: "bg-gray-400/10" },
 };
 
@@ -198,7 +198,7 @@ export default function FeedbackAdmin() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           {[
             { label: "Total", value: stats.total, color: "text-white" },
-            { label: "Corrections", value: stats.drink_issue, color: "text-red-400" },
+            { label: "Menu", value: stats.drink_issue, color: "text-red-400" },
             { label: "Suggestions", value: stats.suggestion, color: "text-blue-400" },
             { label: "Bug Reports", value: stats.bug, color: "text-orange-400" },
           ].map((s) => (

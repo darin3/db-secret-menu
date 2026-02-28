@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { X, Send, CheckCircle, AlertCircle } from "lucide-react";
 
 const TYPES = [
-  { value: "drink_issue", label: "Drink Correction", icon: "🥤" },
-  { value: "bug", label: "Bug Report", icon: "🐛" },
-  { value: "suggestion", label: "Suggestion / Other", icon: "💡" },
+  { value: "drink_issue", label: "Menu Correction", icon: "🥤" },
+  { value: "suggestion", label: "Suggestion", icon: "💡" },
+  { value: "bug", label: "Bug / Other", icon: "🐛" },
 ];
 
 const CATEGORIES_BY_TYPE = {
-  drink_issue: ["Wrong Recipe/Info", "Wrong Name", "Discontinued Drink", "Missing Drink"],
-  bug: ["Display Issue", "Broken Feature", "Performance Issue"],
-  suggestion: ["New Feature", "Add a Drink", "UI Improvement", "Other"],
+  drink_issue: ["Wrong Recipe/Info", "Wrong Name", "Drink Notes", "Discontinued Drink"],
+  suggestion: ["Add a Drink", "New Feature", "Quiz Feedback", "UI Improvement"],
+  bug: ["Bug Report", "General Feedback", "Praise"],
 };
 
 export default function FeedbackModal({ open, onClose }) {
@@ -18,6 +18,8 @@ export default function FeedbackModal({ open, onClose }) {
   const [category, setCategory] = useState("");
   const [summary, setSummary] = useState("");
   const [detail, setDetail] = useState("");
+  const [drinkName, setDrinkName] = useState("");
+  const [flavors, setFlavors] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [errorMsg, setErrorMsg] = useState("");
@@ -45,6 +47,8 @@ export default function FeedbackModal({ open, onClose }) {
     setCategory("");
     setSummary("");
     setDetail("");
+    setDrinkName("");
+    setFlavors("");
     setContactEmail("");
     setStatus("idle");
     setErrorMsg("");
@@ -63,6 +67,19 @@ export default function FeedbackModal({ open, onClose }) {
     setStatus("submitting");
     setErrorMsg("");
 
+    // Serialize drink fields into detail text
+    const showDrinkFields = type === "drink_issue" || category === "Add a Drink";
+    let fullDetail = "";
+    if (showDrinkFields && (drinkName.trim() || flavors.trim())) {
+      const parts = [];
+      if (drinkName.trim()) parts.push(`Drink Name: ${drinkName.trim()}`);
+      if (flavors.trim()) parts.push(`Flavors: ${flavors.trim()}`);
+      fullDetail = parts.join("\n");
+      if (detail.trim()) fullDetail += "\n\n" + detail.trim();
+    } else {
+      fullDetail = detail.trim();
+    }
+
     try {
       const res = await fetch("/api/feedback", {
         method: "POST",
@@ -71,7 +88,7 @@ export default function FeedbackModal({ open, onClose }) {
           type,
           category: category || null,
           summary: summary.trim(),
-          detail: detail.trim() || null,
+          detail: fullDetail || null,
           contact_email: contactEmail.trim() || null,
           page_context: window.location.pathname,
         }),
@@ -137,7 +154,7 @@ export default function FeedbackModal({ open, onClose }) {
                   <button
                     key={t.value}
                     type="button"
-                    onClick={() => { setType(t.value); setCategory(""); }}
+                    onClick={() => { setType(t.value); setCategory(""); setDrinkName(""); setFlavors(""); }}
                     className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200 border ${
                       type === t.value
                         ? "bg-blue-500/20 border-blue-500/50 text-blue-300"
@@ -158,6 +175,7 @@ export default function FeedbackModal({ open, onClose }) {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
+                  style={{ colorScheme: "dark" }}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer"
                 >
                   <option value="">Select a category...</option>
@@ -166,6 +184,34 @@ export default function FeedbackModal({ open, onClose }) {
                   ))}
                 </select>
               </div>
+            )}
+
+            {/* Drink fields (contextual) */}
+            {(type === "drink_issue" || category === "Add a Drink") && (
+              <>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Which drink?</label>
+                  <input
+                    type="text"
+                    value={drinkName}
+                    onChange={(e) => setDrinkName(e.target.value)}
+                    placeholder="e.g. Cosmic Brownie"
+                    maxLength={100}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">What flavors? (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={flavors}
+                    onChange={(e) => setFlavors(e.target.value)}
+                    placeholder="e.g. Chocolate, Caramel"
+                    maxLength={200}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50"
+                  />
+                </div>
+              </>
             )}
 
             {/* Summary */}
@@ -186,7 +232,9 @@ export default function FeedbackModal({ open, onClose }) {
 
             {/* Details */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Details</label>
+              <label className="block text-sm text-gray-400 mb-2">
+                {type === "drink_issue" || category === "Add a Drink" ? "Additional Notes" : "Details"}
+              </label>
               <textarea
                 value={detail}
                 onChange={(e) => setDetail(e.target.value)}
