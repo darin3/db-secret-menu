@@ -199,7 +199,7 @@ export default function FeedbackModal({ open, onClose }) {
                 </button>
 
                 {categoryOpen && (
-                  <ul className="absolute z-10 w-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl shadow-black/50 max-h-60 overflow-y-auto animate-fade-in divide-y divide-white/5">
+                  <ul className="absolute z-10 w-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl shadow-black/50 max-h-60 overflow-y-auto divide-y divide-white/5">
                     {CATEGORIES_BY_TYPE[type].map((c) => (
                       <li key={c}>
                         <button
