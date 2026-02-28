@@ -20,8 +20,8 @@ export const DRINKS = [
   { name: "Christmas Morning", aka: null, flavors: ["Chai", "White Chocolate"], seasonal: true },
   { name: "Cinnamon Roll", aka: null, flavors: ["White Chocolate", "Cinnamon"] },
   { name: "Cocoa Citrus", aka: "B52", flavors: ["Orange", "Irish Cream"], limited: true },
-  { name: "Cookie", aka: null, flavors: ["White Chocolate", "Chocolate Macadamia"] },
-  { name: "Cookie Crave", aka: "Cookie Monster", flavors: ["Dark Chocolate", "Chocolate Macadamia"] },
+  { name: "Cookie", aka: null, flavors: ["White Chocolate", "Chocolate Mac"] },
+  { name: "Cookie Crave", aka: "Cookie Monster", flavors: ["Dark Chocolate", "Chocolate Mac"] },
   { name: "Cookies & Cream", aka: null, flavors: ["White Coffee", "White Chocolate", "Dark Chocolate Drizzle"] },
   { name: "Coral Reef", aka: null, flavors: ["Vanilla", "Orange", "Blue Raz Float"], limited: true },
   { name: "Cotton Candy", aka: null, flavors: ["White Chocolate", "Blue Raz"] },
@@ -34,7 +34,7 @@ export const DRINKS = [
   { name: "Double Rainbro™", aka: null, flavors: ["Peach", "Strawberry", "Coconut"] },
   { name: "Dragon Slayer", aka: null, flavors: ["Raspberry", "Blue Raz", "Blackberry Float"] },
   { name: "Dreamweaver", aka: null, flavors: ["Hazelnut", "White Chocolate"] },
-  { name: "Dutch Canyon", aka: "Grand Canyon", flavors: ["White Chocolate", "Dark Chocolate", "Chocolate Macadamia", "Caramel Drizzle"] },
+  { name: "Dutch Canyon", aka: "Grand Canyon", flavors: ["White Chocolate", "Dark Chocolate", "Chocolate Mac", "Caramel Drizzle"] },
   { name: "Dutch Crunch", aka: "Captain Crunch", flavors: ["Strawberry", "Hazelnut"] },
   { name: "Dutch Mojito", aka: null, flavors: ["Coconut", "Lime", "Creme de Menthe"] },
   { name: "Eclipse", aka: null, flavors: ["Peach", "Passion Fruit", "Blue Raz Float", "Blackberry Float"] },
@@ -68,7 +68,7 @@ export const DRINKS = [
   { name: "Midnight", aka: null, flavors: ["Pomegranate", "Blackberry"] },
   { name: "Mint Patty", aka: "JR Mint", flavors: ["Peppermint", "Dark Chocolate"], seasonal: true },
   { name: "Molten Lava", aka: null, flavors: ["Cinnamon", "Dark Chocolate"] },
-  { name: "Mystery Pop", aka: "Tootsie Pop", flavors: ["Chocolate Macadamia", "Any Fruit Flavor"] },
+  { name: "Mystery Pop", aka: "Tootsie Pop", flavors: ["Chocolate Mac", "Any Fruit Flavor"] },
   { name: "Ninja", aka: null, flavors: ["White Chocolate", "Creme de Menthe"] },
   { name: "Nirvana", aka: null, flavors: ["Irish Cream", "Dark Chocolate", "Caramel"] },
   { name: "OG Gummy Bear", aka: null, flavors: ["Pomegranate", "Passion Fruit", "Grapefruit", "Watermelon"] },
@@ -77,7 +77,7 @@ export const DRINKS = [
   { name: "Palm Beach", aka: null, flavors: ["Peach", "Pomegranate"] },
   { name: "Palm Tree", aka: null, flavors: ["Pomegranate", "Passion Fruit", "Lime"] },
   { name: "Passion Water", aka: null, flavors: ["Watermelon", "Passion Fruit"] },
-  { name: "Peach Cobbler", aka: null, flavors: ["Peach", "White Chocolate", "Chocolate Macadamia"] },
+  { name: "Peach Cobbler", aka: null, flavors: ["Peach", "White Chocolate", "Chocolate Mac"] },
   { name: "Peach Ring", aka: null, flavors: ["Passion Fruit", "White Chocolate", "Peach Float"] },
   { name: "Peppermint Bark", aka: null, flavors: ["White Chocolate", "Peppermint", "Dark Chocolate"], seasonal: true },
   { name: "Pink Flamingo", aka: null, flavors: ["Peach", "Strawberry", "White Chocolate"] },
@@ -91,11 +91,11 @@ export const DRINKS = [
   { name: "Sand Castle", aka: "Fleck", flavors: ["White Chocolate", "Coconut", "Hazelnut"] },
   { name: "Scarecrow", aka: "Snickers", flavors: ["Hazelnut", "Dark Chocolate", "Caramel"] },
   { name: "Scuba Diver", aka: "Scooby Snack", flavors: ["White Chocolate", "Kiwi"] },
-  { name: "Seashell", aka: "Islander", flavors: ["Vanilla", "Chocolate Macadamia", "Coconut"] },
+  { name: "Seashell", aka: "Islander", flavors: ["Vanilla", "Chocolate Mac", "Coconut"] },
   { name: "Shark Attack™", aka: null, flavors: ["Lime", "Coconut", "Blue Raz", "Pomegranate Float"] },
   { name: "Shenanigan", aka: "Nutty Irishman", flavors: ["Irish Cream", "Hazelnut"] },
   { name: "Shipwreck", aka: "Irie", flavors: ["Coconut", "Banana"] },
-  { name: "Snickerdoodle", aka: null, flavors: ["White Chocolate", "Cinnamon", "Chocolate Macadamia", "Cinnamon Sprinks"] },
+  { name: "Snickerdoodle", aka: null, flavors: ["White Chocolate", "Cinnamon", "Chocolate Mac", "Cinnamon Sprinks"] },
   { name: "Starry Night", aka: null, flavors: ["Blackberry", "Blue Raz"] },
   { name: "Stop Light", aka: null, flavors: ["Kiwi", "Pomegranate", "Passion Fruit"] },
   { name: "Sugar Cookie", aka: null, flavors: ["Cupcake", "Vanilla", "Raw Sugar Sprinks"] },
@@ -104,15 +104,15 @@ export const DRINKS = [
   { name: "Sweet Sunrise", aka: null, flavors: ["Peach", "Orange", "Passion Fruit", "Banana"], limited: true },
   { name: "Sweetie Pebbles", aka: null, flavors: ["Vanilla", "Cherry"], limited: true },
   { name: "Tiger's Blood", aka: null, flavors: ["Coconut", "Strawberry"] },
-  { name: "Toasted Mellow", aka: "Vanilla Bean", flavors: ["Vanilla", "Chocolate Macadamia"] },
-  { name: "Trail Mix", aka: "Nutella", flavors: ["Dark Chocolate", "Chocolate Macadamia", "Almond"] },
+  { name: "Toasted Mellow", aka: "Vanilla Bean", flavors: ["Vanilla", "Chocolate Mac"] },
+  { name: "Trail Mix", aka: "Nutella", flavors: ["Dark Chocolate", "Chocolate Mac", "Almond"] },
   { name: "Trifecta", aka: null, flavors: ["White Chocolate", "Dark Chocolate", "Caramel"] },
   { name: "Triple P", aka: null, flavors: ["Pomegranate", "Peach", "Passion Fruit"] },
   { name: "Trixie", aka: "Pixie Stick", flavors: ["Orange", "Pomegranate", "Almond"], limited: true },
   { name: "Tropical", aka: null, flavors: ["Passion Fruit", "Blue Raz", "Coconut"] },
   { name: "Tuxedo", aka: null, flavors: ["White Chocolate", "Dark Chocolate"] },
   { name: "Unicorn Blood", aka: null, flavors: ["Almond", "Strawberry", "White Chocolate"] },
-  { name: "Unwind", aka: "Wallaby", flavors: ["Caramel", "Chocolate Macadamia", "Dark Chocolate"] },
+  { name: "Unwind", aka: "Wallaby", flavors: ["Caramel", "Chocolate Mac", "Dark Chocolate"] },
   { name: "Vampire Slayer", aka: null, flavors: ["Pomegranate", "Strawberry"] },
   { name: "Werewolf", aka: "Reeses", flavors: ["Salted Caramel", "Hazelnut", "Dark Chocolate"] },
   { name: "White Zombie", aka: null, flavors: ["White Chocolate", "Vanilla"] },
@@ -126,7 +126,7 @@ DRINKS.forEach(d => d.flavors.filter(isCoreFlavor).forEach(f => coreFlavorSet.ad
 export const ALL_CORE_FLAVORS = [...coreFlavorSet].sort();
 
 export const FRUITY = ["Strawberry", "Raspberry", "Blackberry", "Blueberry", "Blue Raz", "Peach", "Passion Fruit", "Pomegranate", "Kiwi", "Lime", "Lemon", "Orange", "Grapefruit", "Watermelon", "Banana", "Cherry", "Apple Smoothie Mix", "Mango"];
-export const SWEET = ["White Chocolate", "Dark Chocolate", "Chocolate Macadamia", "Caramel", "Salted Caramel", "Mocha", "Cupcake", "Almond", "Hazelnut", "Almond Roca", "Vanilla", "Irish Cream"];
+export const SWEET = ["White Chocolate", "Dark Chocolate", "Chocolate Mac", "Caramel", "Salted Caramel", "Mocha", "Cupcake", "Almond", "Hazelnut", "Almond Roca", "Vanilla", "Irish Cream"];
 export const SPICED = ["Cinnamon", "Chai", "Peppermint", "Creme de Menthe"];
 export const MINTY_SPICED = ["Cinnamon", "Chai", "Peppermint", "Creme de Menthe"];
 
@@ -136,7 +136,7 @@ const CHAI_AFFINITY = {
   Cinnamon: 3, Vanilla: 3,
   Caramel: 2, "Salted Caramel": 2, Hazelnut: 2, Peppermint: 2, "Creme de Menthe": 2,
   "Dark Chocolate": 2, Mocha: 2,
-  "White Chocolate": 1, Almond: 1, "Chocolate Macadamia": 1, "Irish Cream": 1,
+  "White Chocolate": 1, Almond: 1, "Chocolate Mac": 1, "Irish Cream": 1,
   Coconut: 1, Cupcake: 1, "White Coffee": 1,
 };
 export const chaiAffinityScore = (d) => {
@@ -149,7 +149,7 @@ export const FLAVOR_COLORS = {
   Peach: "#FABB51", "Passion Fruit": "#E17055", Pomegranate: "#C0392B", Kiwi: "#7BED9F",
   Lime: "#2ED573", Orange: "#FF9F43", Grapefruit: "#F8A5C2", Watermelon: "#FF6B81",
   Banana: "#F6E58D", Cherry: "#DC143C", Coconut: "#00D2D3", "Apple Smoothie Mix": "#6AB04C", Mango: "#FFB142",
-  "White Chocolate": "#F5F0E1", "Dark Chocolate": "#967259", "Chocolate Macadamia": "#DEB887",
+  "White Chocolate": "#F5F0E1", "Dark Chocolate": "#967259", "Chocolate Mac": "#DEB887",
   Caramel: "#D4A259", "Salted Caramel": "#C49A52", Mocha: "#A67C52", Cupcake: "#FF9FF3",
   Almond: "#DCCBB7", Hazelnut: "#D2956B", "Almond Roca": "#B8860B", Vanilla: "#F3E9DC",
   Cinnamon: "#D35400", Chai: "#C48A2A", "Irish Cream": "#C9B99A", Peppermint: "#00E676",
@@ -251,8 +251,8 @@ export const MOOD_QUESTIONS = [
     options: [
       {
         id: "choc", label: "Chocolate & Mocha", icon: "chocolate",
-        filter: d => d.flavors.some(f => ["Dark Chocolate", "White Chocolate", "Mocha", "Chocolate Macadamia"].includes(f)),
-        scorer: d => d.flavors.filter(f => ["Dark Chocolate", "White Chocolate", "Mocha", "Chocolate Macadamia"].includes(f)).length
+        filter: d => d.flavors.some(f => ["Dark Chocolate", "White Chocolate", "Mocha", "Chocolate Mac"].includes(f)),
+        scorer: d => d.flavors.filter(f => ["Dark Chocolate", "White Chocolate", "Mocha", "Chocolate Mac"].includes(f)).length
       },
       {
         id: "caramel", label: "Caramel & Vanilla", icon: "caramel",

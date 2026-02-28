@@ -10,6 +10,9 @@ import {
     Info
 } from 'lucide-react';
 
+const ORDER_NAMES = { "Chocolate Mac": "Chocolate Macadamia Nut" };
+const orderName = f => ORDER_NAMES[f] || f;
+
 const VIBE_ICONS = {
     tropical: Palmtree,
     fruity: Cherry,
@@ -167,7 +170,7 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
                                             {modifiers.length > 0 && <>, with {modifiers.join(" and ")}</>}?"
                                         </p>
                                         <p className="mt-2 text-gray-400">
-                                            Flavors: <span className="text-gray-200">{coreFlavors.join(", ")}</span>
+                                            Flavors: <span className="text-gray-200">{coreFlavors.map(orderName).join(", ")}</span>
                                             {modifiers.length > 0 && <> + {modifiers.join(", ")}</>}
                                         </p>
                                     </div>

@@ -111,7 +111,7 @@ export default function FlavorTab({ goToExploreWithFlavors }) {
                                         <div className="flex-1 flex flex-row items-center gap-1.5 sm:gap-2 md:gap-4 flex-nowrap min-w-0">
                                             {/* Flavor 1 */}
                                             <span
-                                                className="px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shrink border truncate max-w-[80px] sm:max-w-[120px]"
+                                                className="px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shrink border truncate max-w-[110px] sm:max-w-none"
                                                 style={{ backgroundColor: `${FLAVOR_COLORS[f1]}22`, color: FLAVOR_COLORS[f1], borderColor: `${FLAVOR_COLORS[f1]}44` }}
                                             >
                                                 {f1}
@@ -121,7 +121,7 @@ export default function FlavorTab({ goToExploreWithFlavors }) {
 
                                             {/* Flavor 2 */}
                                             <span
-                                                className="px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shrink border truncate max-w-[80px] sm:max-w-[120px]"
+                                                className="px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shrink border truncate max-w-[110px] sm:max-w-none"
                                                 style={{ backgroundColor: `${FLAVOR_COLORS[f2]}22`, color: FLAVOR_COLORS[f2], borderColor: `${FLAVOR_COLORS[f2]}44` }}
                                             >
                                                 {f2}
