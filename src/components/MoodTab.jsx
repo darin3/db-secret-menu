@@ -248,19 +248,19 @@ export default function MoodTab() {
                         {moodResult.length > 0 ? "Here are your picks!" : "No exact matches found"}
                     </h2>
 
-                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 sm:relative sm:bottom-auto sm:left-auto sm:translate-x-0 sm:z-auto sm:mb-8 flex items-center gap-2 sm:gap-3">
+                    <div className="fixed sm:relative mx-auto bottom-6 sm:bottom-auto left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 z-50 sm:z-auto flex flex-row items-center justify-center gap-2 sm:gap-3 bg-gray-900/95 sm:bg-transparent px-3 sm:px-0 py-2 sm:py-0 rounded-full sm:rounded-none border border-white/10 sm:border-none shadow-2xl sm:shadow-none backdrop-blur-xl sm:backdrop-blur-none mb-0 sm:mb-8 w-max">
                         <button
                             onClick={resetMood}
-                            className="px-5 py-3 sm:px-6 sm:py-3.5 rounded-full font-bold flex items-center gap-2 bg-white/10 text-white hover:bg-white/20 transition-colors text-sm sm:text-base"
+                            className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 transition-colors text-sm sm:text-base shadow-lg sm:shadow-none"
                         >
-                            <RefreshCw size={16} /> Start Over
+                            <RefreshCw size={18} className="sm:w-[18px] sm:h-[18px] w-4 h-4" /> Start Over
                         </button>
                         {resultPool && resultPool.length > 3 && (
                             <button
                                 onClick={shuffleResults}
-                                className="px-5 py-3 sm:px-6 sm:py-3.5 rounded-full font-bold flex items-center gap-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:text-blue-300 transition-colors text-sm sm:text-base"
+                                className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:text-blue-300 transition-colors text-sm sm:text-base shadow-lg sm:shadow-none"
                             >
-                                <RotateCw size={16} /> Shuffle
+                                <RotateCw size={18} className="sm:w-[18px] sm:h-[18px] w-4 h-4" /> Shuffle
                             </button>
                         )}
                     </div>
