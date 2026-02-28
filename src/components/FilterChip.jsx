@@ -5,8 +5,8 @@ export default function FilterChip({ active, inactive, color, onClick, label, ic
         <button
             onClick={onClick}
             className={`
-        px-3 py-1.5 rounded-full border-2 text-xs font-semibold
-        inline-flex items-center gap-1.5 m-[3px] transition-all duration-200
+        px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border-2 text-[11px] sm:text-xs font-semibold
+        inline-flex items-center gap-1 sm:gap-1.5 m-[2px] sm:m-[3px] transition-all duration-200
         hover:scale-[1.03] active:scale-[0.97]
         ${inactive ? 'opacity-40 saturate-50' : ''}
       `}

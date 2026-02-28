@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { getDrinkVibe, VIBE_META, FLAVOR_COLORS, isCoreFlavor, FRUITY, SWEET } from '../data/drinks';
+import { getDrinkVibe, getDrinkBaseCategory, VIBE_META, FLAVOR_COLORS, isCoreFlavor, FRUITY, SWEET } from '../data/drinks';
 import {
     Palmtree,
     Cherry,
@@ -35,20 +35,17 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
             baseTypes = ["chai"];
         } else if (hasWhiteCoffee) {
             baseTypes = ["white coffee latte", "white coffee freeze", "white coffee shake", "white coffee chai", "white coffee cold brew"];
-        } else if (["cozy", "indulgent", "sweet"].includes(vibe)) {
-            baseTypes = ["latte", "freeze", "shake", "cold brew", "chai"];
-        } else if (["tropical", "fruity"].includes(vibe)) {
-            baseTypes = ["rebel", "iced lemonade", "soda", "iced tea"];
         } else if (vibe === "fusion") {
-            // Check if drink is fruit-forward — if so, skip coffee bases
-            const hasAnyFruit = drink.flavors.some(f => f.includes("Any Fruit"));
-            const fruitishCount = drink.flavors.filter(f => FRUITY.includes(f) || f.includes("Float")).length;
-            const sweetCount = drink.flavors.filter(f => SWEET.includes(f)).length;
-            if (hasAnyFruit || fruitishCount > sweetCount) {
+            const baseCategory = getDrinkBaseCategory(drink);
+            if (baseCategory === "rebel") {
                 baseTypes = ["rebel", "freeze", "iced lemonade"];
             } else {
                 baseTypes = ["latte", "freeze", "rebel", "iced lemonade"];
             }
+        } else if (["cozy", "indulgent", "sweet"].includes(vibe)) {
+            baseTypes = ["latte", "freeze", "shake", "cold brew", "chai"];
+        } else if (["tropical", "fruity"].includes(vibe)) {
+            baseTypes = ["rebel", "iced lemonade", "soda", "iced tea"];
         } else {
             baseTypes = ["latte", "freeze", "chai"];
         }

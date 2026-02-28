@@ -95,7 +95,7 @@ export default function App() {
 
         {/* Footer */}
         <footer className="mt-20 pt-8 border-t border-white/5 text-center text-xs text-gray-500 pb-4">
-          <p>Not affiliated with Dutch Bros Coffee. Just built by fans, for fans.</p>
+          <p>Not affiliated with Dutch Bros Coffee.</p>
         </footer>
       </div>
       <SpeedInsights />

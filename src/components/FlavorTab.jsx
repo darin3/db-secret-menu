@@ -104,35 +104,35 @@ export default function FlavorTab({ goToExploreWithFlavors }) {
                                         onClick={() => goToExploreWithFlavors([f1, f2])}
                                         className="flex items-center gap-3 cursor-pointer group p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-white/20 transition-all hover:shadow-lg"
                                     >
-                                        <span className="w-8 text-lg font-black text-gray-700 text-center opacity-50 group-hover:opacity-100 transition-opacity">
+                                        <span className="w-6 sm:w-8 text-base sm:text-lg font-black text-gray-700 text-center opacity-50 group-hover:opacity-100 transition-opacity shrink-0">
                                             #{i + 1}
                                         </span>
 
-                                        <div className="flex-1 flex flex-wrap items-center gap-2 md:gap-4">
+                                        <div className="flex-1 flex flex-row items-center gap-1.5 sm:gap-2 md:gap-4 flex-nowrap min-w-0">
                                             {/* Flavor 1 */}
                                             <span
-                                                className="px-3 py-1 rounded-lg text-xs font-bold shrink-0 border"
+                                                className="px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shrink border truncate max-w-[80px] sm:max-w-[120px]"
                                                 style={{ backgroundColor: `${FLAVOR_COLORS[f1]}22`, color: FLAVOR_COLORS[f1], borderColor: `${FLAVOR_COLORS[f1]}44` }}
                                             >
                                                 {f1}
                                             </span>
 
-                                            <span className="text-gray-600 font-bold shrink-0">+</span>
+                                            <span className="text-gray-600 font-bold shrink-0 text-sm sm:text-base">+</span>
 
                                             {/* Flavor 2 */}
                                             <span
-                                                className="px-3 py-1 rounded-lg text-xs font-bold shrink-0 border"
+                                                className="px-2 sm:px-3 py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold shrink border truncate max-w-[80px] sm:max-w-[120px]"
                                                 style={{ backgroundColor: `${FLAVOR_COLORS[f2]}22`, color: FLAVOR_COLORS[f2], borderColor: `${FLAVOR_COLORS[f2]}44` }}
                                             >
                                                 {f2}
                                             </span>
 
                                             {/* Count & Arrow */}
-                                            <div className="ml-auto flex items-center gap-4">
-                                                <span className="text-xs text-gray-400 font-bold bg-white/5 py-1 px-3 rounded-full">
-                                                    {count} drinks
+                                            <div className="ml-auto flex items-center gap-2 sm:gap-4 shrink-0 pl-1">
+                                                <span className="text-[10px] sm:text-xs text-gray-400 font-bold bg-white/5 py-1 px-2 sm:px-3 rounded-full whitespace-nowrap">
+                                                    {count} <span className="hidden sm:inline">drinks</span>
                                                 </span>
-                                                <ArrowRight size={16} className="text-gray-600 group-hover:text-white transition-colors hidden sm:block" />
+                                                <ArrowRight size={16} className="text-gray-600 group-hover:text-white transition-colors hidden sm:block shrink-0" />
                                             </div>
                                         </div>
                                     </div>
