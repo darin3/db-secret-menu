@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, Send, CheckCircle, AlertCircle, ChevronDown } from "lucide-react";
+import { DRINKS } from "../data/drinks";
 
 const TYPES = [
   { value: "drink_issue", label: "Drink Menu", icon: "🥤" },
@@ -18,9 +19,14 @@ export default function FeedbackModal({ open, onClose }) {
   const [category, setCategory] = useState("");
   const [categoryOpen, setCategoryOpen] = useState(false);
   const dropdownRef = useRef(null);
+
   const [summary, setSummary] = useState("");
   const [detail, setDetail] = useState("");
+
   const [drinkName, setDrinkName] = useState("");
+  const [drinkSuggestionsOpen, setDrinkSuggestionsOpen] = useState(false);
+  const drinkDropdownRef = useRef(null);
+
   const [flavors, setFlavors] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
@@ -57,6 +63,18 @@ export default function FeedbackModal({ open, onClose }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [categoryOpen]);
 
+  // Click outside to close drink suggestions
+  useEffect(() => {
+    if (!drinkSuggestionsOpen) return;
+    const handleClickOutside = (e) => {
+      if (drinkDropdownRef.current && !drinkDropdownRef.current.contains(e.target)) {
+        setDrinkSuggestionsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [drinkSuggestionsOpen]);
+
   const resetForm = () => {
     setType("drink_issue");
     setCategory("");
@@ -64,6 +82,7 @@ export default function FeedbackModal({ open, onClose }) {
     setSummary("");
     setDetail("");
     setDrinkName("");
+    setDrinkSuggestionsOpen(false);
     setFlavors("");
     setContactEmail("");
     setStatus("idle");
@@ -222,16 +241,46 @@ export default function FeedbackModal({ open, onClose }) {
             {/* Drink fields (contextual) */}
             {type === "drink_issue" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
+                <div className="relative" ref={drinkDropdownRef}>
                   <label className="block text-sm font-medium text-gray-400 mb-2">Which drink?</label>
                   <input
                     type="text"
                     value={drinkName}
-                    onChange={(e) => setDrinkName(e.target.value)}
+                    onChange={(e) => {
+                      setDrinkName(e.target.value);
+                      if (e.target.value.trim()) setDrinkSuggestionsOpen(true);
+                      else setDrinkSuggestionsOpen(false);
+                    }}
+                    onFocus={() => {
+                      if (drinkName.trim()) setDrinkSuggestionsOpen(true);
+                    }}
                     placeholder="e.g. Cosmic Brownie"
                     maxLength={100}
                     className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-gray-600 transition-all duration-200 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
                   />
+                  {drinkSuggestionsOpen && drinkName.trim() && (
+                    <ul className="absolute z-10 w-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl shadow-black/50 max-h-48 overflow-y-auto divide-y divide-white/5">
+                      {DRINKS.filter(d => d.name.toLowerCase().includes(drinkName.toLowerCase())).slice(0, 10).map((drink) => (
+                        <li key={drink.name}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDrinkName(drink.name);
+                              setDrinkSuggestionsOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-3 text-sm transition-colors hover:bg-white/10 text-gray-300"
+                          >
+                            {drink.name}
+                          </button>
+                        </li>
+                      ))}
+                      {DRINKS.filter(d => d.name.toLowerCase().includes(drinkName.toLowerCase())).length === 0 && (
+                        <li className="px-4 py-3 text-sm text-gray-500">
+                          (New Drink Name)
+                        </li>
+                      )}
+                    </ul>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">What flavors?</label>
