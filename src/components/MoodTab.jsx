@@ -56,7 +56,7 @@ export default function MoodTab() {
     const [openCard, setOpenCard] = useState(null);
 
     const pickFromPool = (pool) => {
-        const pickCount = Math.min(5, pool.length);
+        const pickCount = Math.min(3, pool.length);
         const copy = [...pool];
         for (let i = copy.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -122,7 +122,7 @@ export default function MoodTab() {
 
         // Build the selection pool: scored top half if scorers exist, otherwise full pool
         let selectionPool;
-        if (scorers.length > 0 && pool.length > 5) {
+        if (scorers.length > 0 && pool.length > 3) {
             const scored = pool.map(d => ({
                 drink: d,
                 score: scorers.reduce((sum, fn) => sum + fn(d), 0),
@@ -153,9 +153,9 @@ export default function MoodTab() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto text-center animate-fade-in py-4 px-4">
+        <div className="max-w-3xl mx-auto text-center animate-fade-in py-2 sm:py-4 px-3 sm:px-4">
             {!moodResult ? (
-                <div className="bg-white/5 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] border border-white/5 shadow-2xl relative overflow-hidden group">
+                <div className="bg-white/5 backdrop-blur-xl p-5 sm:p-8 rounded-3xl sm:rounded-[2rem] border border-white/5 shadow-2xl relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-30 group-hover:opacity-100 transition-opacity duration-700" />
                     <div className="relative z-10">
                         {moodStep > 0 && (
@@ -193,23 +193,23 @@ export default function MoodTab() {
                             <span>3</span>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-left">
                             {(moodStep < 2 ? MOOD_QUESTIONS[moodStep].options : getThirdQuestion(moodAnswers).options).map((opt, i) => {
                                 const Icon = OPTION_ICONS[opt.icon] || HelpCircle;
                                 return (
                                     <button
                                         key={i}
                                         onClick={() => handleMood(opt)}
-                                        className="w-full h-full px-5 py-6 rounded-2xl border border-white/5 bg-white/5 hover:bg-blue-500/10 hover:border-blue-500/50 hover:text-blue-50 transition-all duration-300 shadow-sm flex items-center justify-between group/btn relative overflow-hidden"
+                                        className="w-full h-full px-4 sm:px-5 py-4 sm:py-6 rounded-2xl border border-white/5 bg-white/5 hover:bg-blue-500/10 hover:border-blue-500/50 hover:text-blue-50 transition-all duration-300 shadow-sm flex items-center justify-between group/btn relative overflow-hidden"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="text-gray-400 group-hover/btn:text-blue-400 transition-colors">
-                                                <Icon size={20} />
+                                            <div className="text-gray-400 group-hover/btn:text-blue-400 transition-colors shrink-0">
+                                                <Icon size={18} className="sm:w-5 sm:h-5" />
                                             </div>
-                                            <span className="text-sm font-bold leading-snug text-gray-200 group-hover/btn:text-white transition-colors">{opt.label}</span>
+                                            <span className="text-sm sm:text-base font-bold leading-snug text-gray-200 group-hover/btn:text-white transition-colors">{opt.label}</span>
                                         </div>
-                                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover/btn:bg-blue-500/20 group-hover/btn:text-blue-400 transition-colors shrink-0 ml-4 group-hover/btn:translate-x-1 duration-300">
-                                            <ArrowRight size={16} />
+                                        <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover/btn:bg-blue-500/20 group-hover/btn:text-blue-400 transition-colors shrink-0 ml-3 group-hover/btn:translate-x-1 duration-300">
+                                            <ArrowRight size={14} className="sm:w-4 sm:h-4" />
                                         </div>
                                     </button>
                                 );
@@ -225,7 +225,7 @@ export default function MoodTab() {
                     </div>
                 </div>
             ) : (
-                <div className="animate-fade-in-up">
+                <div className="animate-fade-in">
                     <div className="flex items-center justify-center gap-2 mb-4 w-full mt-2">
                         <button
                             onClick={handleGoBack}
@@ -248,21 +248,21 @@ export default function MoodTab() {
                         {moodResult.length > 0 ? "Here are your picks!" : "No exact matches found"}
                     </h2>
 
-                    <div className="mb-8 flex flex-row items-center justify-center gap-3">
-                        {resultPool && resultPool.length > 5 && (
-                            <button
-                                onClick={shuffleResults}
-                                className="px-6 py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:text-blue-300 transition-colors"
-                            >
-                                <RotateCw size={18} /> Shuffle
-                            </button>
-                        )}
+                    <div className="fixed sm:relative mx-auto bottom-6 sm:bottom-auto left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 z-50 sm:z-auto flex flex-row items-center justify-center gap-2 sm:gap-3 bg-gray-900/95 sm:bg-transparent px-3 sm:px-0 py-2 sm:py-0 rounded-full sm:rounded-none border border-white/10 sm:border-none shadow-2xl sm:shadow-none backdrop-blur-xl sm:backdrop-blur-none mb-0 sm:mb-8 w-max">
                         <button
                             onClick={resetMood}
-                            className="px-6 py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 transition-colors"
+                            className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 transition-colors text-sm sm:text-base shadow-lg sm:shadow-none"
                         >
-                            <RefreshCw size={18} /> Start Over
+                            <RefreshCw size={18} className="sm:w-[18px] sm:h-[18px] w-4 h-4" /> Start Over
                         </button>
+                        {resultPool && resultPool.length > 3 && (
+                            <button
+                                onClick={shuffleResults}
+                                className="px-5 sm:px-6 py-3 sm:py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:text-blue-300 transition-colors text-sm sm:text-base shadow-lg sm:shadow-none"
+                            >
+                                <RotateCw size={18} className="sm:w-[18px] sm:h-[18px] w-4 h-4" /> Shuffle
+                            </button>
+                        )}
                     </div>
 
                     {moodResult.length > 0 ? (
@@ -270,7 +270,7 @@ export default function MoodTab() {
                             {filtersWidened && (
                                 <p className="text-gray-400 text-sm mb-4">We widened your results to find more matches.</p>
                             )}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-24 sm:pb-0">
                                 {moodResult.map((d) => (
                                     <div key={d.name} className="text-left">
                                         <DrinkCard drink={d} open={openCard === d.name} onToggle={() => setOpenCard(prev => prev === d.name ? null : d.name)} />
