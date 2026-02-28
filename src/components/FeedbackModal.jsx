@@ -8,9 +8,9 @@ const TYPES = [
 ];
 
 const CATEGORIES_BY_TYPE = {
-  drink_issue: ["Wrong Recipe/Info", "Wrong Name", "Drink Notes", "Discontinued Drink"],
-  suggestion: ["Add a Drink", "New Feature", "Quiz Feedback", "UI Improvement"],
-  bug: ["Bug Report", "General Feedback", "Praise"],
+  drink_issue: ["Wrong Recipe/Info", "Wrong Name", "Add a Drink", "Drink Notes", "Discontinued Drink"],
+  suggestion: ["New Feature", "Quiz Feedback", "UI Improvement"],
+  bug: ["Bug Report", "General Feedback"],
 };
 
 export default function FeedbackModal({ open, onClose }) {
@@ -68,7 +68,7 @@ export default function FeedbackModal({ open, onClose }) {
     setErrorMsg("");
 
     // Serialize drink fields into detail text
-    const showDrinkFields = type === "drink_issue" || category === "Add a Drink";
+    const showDrinkFields = type === "drink_issue";
     let fullDetail = "";
     if (showDrinkFields && (drinkName.trim() || flavors.trim())) {
       const parts = [];
@@ -178,16 +178,16 @@ export default function FeedbackModal({ open, onClose }) {
                   style={{ colorScheme: "dark" }}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500/50 appearance-none cursor-pointer"
                 >
-                  <option value="">Select a category...</option>
+                  <option value="" style={{ background: "#1a1a1a", color: "#fff" }}>Select a category...</option>
                   {CATEGORIES_BY_TYPE[type].map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c} style={{ background: "#1a1a1a", color: "#fff" }}>{c}</option>
                   ))}
                 </select>
               </div>
             )}
 
             {/* Drink fields (contextual) */}
-            {(type === "drink_issue" || category === "Add a Drink") && (
+            {type === "drink_issue" && (
               <>
                 <div>
                   <label className="block text-sm text-gray-400 mb-2">Which drink?</label>
@@ -233,7 +233,7 @@ export default function FeedbackModal({ open, onClose }) {
             {/* Details */}
             <div>
               <label className="block text-sm text-gray-400 mb-2">
-                {type === "drink_issue" || category === "Add a Drink" ? "Additional Notes" : "Details"}
+                {type === "drink_issue" ? "Additional Notes" : "Details"}
               </label>
               <textarea
                 value={detail}
