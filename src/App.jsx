@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { DRINKS } from "./data/drinks";
 import ExploreTab from "./components/ExploreTab";
-import MoodTab from "./components/MoodTab";
-import FlavorTab from "./components/FlavorTab";
 import { Coffee, Dices, Map } from "lucide-react";
+
+const MoodTab = lazy(() => import("./components/MoodTab"));
+const FlavorTab = lazy(() => import("./components/FlavorTab"));
 
 export default function App() {
   const [tab, setTab] = useState("explore");
@@ -50,7 +51,7 @@ export default function App() {
         {/* Header */}
         <header className="text-center mb-10 pb-8 border-b border-white/5">
           <div className="inline-block mb-3 cursor-pointer" onClick={() => { setTab("explore"); setResetKey(k => k + 1); }}>
-            <span className="text-4xl filter drop-shadow-lg scale-110 inline-block">🧡</span>
+            <span className="text-4xl filter drop-shadow-lg scale-110 inline-block">❤️</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-400 cursor-pointer" onClick={() => { setTab("explore"); setResetKey(k => k + 1); }}>
             Dutch Bros Secret Menu
@@ -70,8 +71,10 @@ export default function App() {
         {/* Main Content Area */}
         <main className="min-h-[50vh]">
           {tab === "explore" && <ExploreTab initialFlavors={exploreFlavorSearch} onInitialFlavorsConsumed={() => setExploreFlavorSearch(null)} resetKey={resetKey} />}
-          {tab === "mood" && <MoodTab />}
-          {tab === "flavors" && <FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />}
+          <Suspense fallback={null}>
+            {tab === "mood" && <MoodTab />}
+            {tab === "flavors" && <FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />}
+          </Suspense>
         </main>
 
         {/* Footer */}
