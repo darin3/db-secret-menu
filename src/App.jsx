@@ -3,14 +3,17 @@ import { Routes, Route, NavLink, useNavigate, Navigate } from "react-router-dom"
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { DRINKS } from "./data/drinks";
 import ExploreTab from "./components/ExploreTab";
-import { Coffee, Dices, Map } from "lucide-react";
+import FeedbackModal from "./components/FeedbackModal";
+import { Coffee, Dices, Map, MessageSquare } from "lucide-react";
 
 const MoodTab = lazy(() => import("./components/MoodTab"));
 const FlavorTab = lazy(() => import("./components/FlavorTab"));
+const FeedbackAdmin = lazy(() => import("./pages/FeedbackAdmin"));
 
 export default function App() {
   const navigate = useNavigate();
   const [resetKey, setResetKey] = useState(0);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   // Dismiss loader and restore scrolling once React mounts
   useEffect(() => {
@@ -88,6 +91,7 @@ export default function App() {
               <Route path="/" element={<ExploreTab initialFlavors={exploreFlavorSearch} onInitialFlavorsConsumed={() => setExploreFlavorSearch(null)} resetKey={resetKey} />} />
               <Route path="/discover" element={<MoodTab />} />
               <Route path="/map" element={<FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />} />
+              <Route path="/admin" element={<FeedbackAdmin />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
@@ -95,9 +99,17 @@ export default function App() {
 
         {/* Footer */}
         <footer className="mt-20 pt-8 border-t border-white/5 text-center text-xs text-gray-500 pb-4">
-          <p>Not affiliated with Dutch Bros Coffee.</p>
+          <p className="mb-2">Not affiliated with Dutch Bros Coffee.</p>
+          <button
+            onClick={() => setFeedbackOpen(true)}
+            className="inline-flex items-center gap-1.5 text-gray-500 hover:text-blue-400 transition-colors"
+          >
+            <MessageSquare size={13} />
+            Report an Issue or Suggestion
+          </button>
         </footer>
       </div>
+      <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
       <SpeedInsights />
     </div>
   );
