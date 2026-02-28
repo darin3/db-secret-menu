@@ -128,7 +128,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
                             inactive={selBase !== null && selBase !== 'rebel'}
                             color="#C084FC"
                             onClick={() => setSelBase(selBase === 'rebel' ? null : 'rebel')}
-                            label="Rebel / Refresher"
+                            label="Rebel / Lemonade / Tea / Soda"
                             icon={Palmtree}
                         />
                     </div>
