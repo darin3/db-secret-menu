@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { DRINKS, ACTIVE_VIBES, VIBE_META, ALL_CORE_FLAVORS, FLAVOR_COLORS, getDrinkVibe } from '../data/drinks';
+import { DRINKS, ACTIVE_VIBES, VIBE_META, ALL_CORE_FLAVORS, FLAVOR_COLORS, getDrinkVibe, getDrinkBaseCategory } from '../data/drinks';
 import FilterChip from './FilterChip';
 import DrinkCard from './DrinkCard';
 import {
@@ -30,12 +30,13 @@ const VIBE_ICONS = {
 };
 export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, resetKey }) {
     const [search, setSearch] = useState("");
+    const [selBase, setSelBase] = useState(null); // 'coffee' or 'rebel'
     const [selVibes, setSelVibes] = useState([]);
     const [selFlavors, setSelFlavors] = useState([]);
     const [copied, setCopied] = useState(false);
     const [openCard, setOpenCard] = useState(null);
 
-    const clearFilters = () => { setSearch(""); setSelVibes([]); setSelFlavors([]); setOpenCard(null); };
+    const clearFilters = () => { setSearch(""); setSelBase(null); setSelVibes([]); setSelFlavors([]); setOpenCard(null); };
 
     useEffect(() => {
         if (initialFlavors && initialFlavors.length > 0) {
@@ -54,17 +55,22 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
 
     const filtered = useMemo(() => {
         return DRINKS.filter(d => {
-            const vibe = getDrinkVibe(d);
             if (search) {
                 const s = search.toLowerCase();
                 if (!d.name.toLowerCase().includes(s) && !d.aka?.toLowerCase().includes(s) && !d.flavors.some(f => f.toLowerCase().includes(s))) return false;
             }
-            if (selVibes.length && !selVibes.includes(vibe)) return false;
+            if (selBase) {
+                if (getDrinkBaseCategory(d) !== selBase) return false;
+            }
+            if (selVibes.length) {
+                const vibe = getDrinkVibe(d);
+                if (!selVibes.includes(vibe)) return false;
+            }
             if (selFlavors.length && !selFlavors.every(f => d.flavors.some(df => df === f))) return false;
             return true;
         });
-    }, [search, selVibes, selFlavors]);
-    const hasFilters = search.length > 0 || selVibes.length > 0 || selFlavors.length > 0;
+    }, [search, selBase, selVibes, selFlavors]);
+    const hasFilters = search.length > 0 || selBase !== null || selVibes.length > 0 || selFlavors.length > 0;
 
     const copyFilteredDrinks = () => {
         if (!filtered.length) return;
@@ -105,6 +111,30 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
             {/* Filter Section */}
             <div className="bg-white/5 p-4 rounded-3xl mb-6 shadow-xl border border-white/5">
                 <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        <CoffeeIcon size={14} /> Base Drink
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        <FilterChip
+                            active={selBase === 'coffee'}
+                            inactive={selBase !== null && selBase !== 'coffee'}
+                            color="#EAB543" // Indulgent/Coffee vibe color
+                            onClick={() => setSelBase(selBase === 'coffee' ? null : 'coffee')}
+                            label="Latte / Chai / Cocoa"
+                            icon={CoffeeIcon}
+                        />
+                        <FilterChip
+                            active={selBase === 'rebel'}
+                            inactive={selBase !== null && selBase !== 'rebel'}
+                            color="#00CEC9" // Fusion vibe color as it's zesty
+                            onClick={() => setSelBase(selBase === 'rebel' ? null : 'rebel')}
+                            label="Rebel / Refresher"
+                            icon={Palmtree}
+                        />
+                    </div>
+                </div>
+
+                <div className="mb-4 pt-3 border-t border-white/10">
                     <div className="flex items-center gap-2 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
                         <Filter size={14} /> Vibes
                     </div>

@@ -125,10 +125,10 @@ const coreFlavorSet = new Set();
 DRINKS.forEach(d => d.flavors.filter(isCoreFlavor).forEach(f => coreFlavorSet.add(f)));
 export const ALL_CORE_FLAVORS = [...coreFlavorSet].sort();
 
-export const FRUITY = ["Strawberry","Raspberry","Blackberry","Blueberry","Blue Raz","Peach","Passion Fruit","Pomegranate","Kiwi","Lime","Lemon","Orange","Grapefruit","Watermelon","Banana","Cherry","Apple Smoothie Mix","Mango"];
-export const SWEET = ["White Chocolate","Dark Chocolate","Chocolate Mac","Caramel","Salted Caramel","Mocha","Cupcake","Almond","Hazelnut","Almond Roca","Vanilla","Irish Cream"];
-export const SPICED = ["Cinnamon","Chai","Peppermint","Creme de Menthe"];
-export const MINTY_SPICED = ["Cinnamon","Chai","Peppermint","Creme de Menthe"];
+export const FRUITY = ["Strawberry", "Raspberry", "Blackberry", "Blueberry", "Blue Raz", "Peach", "Passion Fruit", "Pomegranate", "Kiwi", "Lime", "Lemon", "Orange", "Grapefruit", "Watermelon", "Banana", "Cherry", "Apple Smoothie Mix", "Mango"];
+export const SWEET = ["White Chocolate", "Dark Chocolate", "Chocolate Mac", "Caramel", "Salted Caramel", "Mocha", "Cupcake", "Almond", "Hazelnut", "Almond Roca", "Vanilla", "Irish Cream"];
+export const SPICED = ["Cinnamon", "Chai", "Peppermint", "Creme de Menthe"];
+export const MINTY_SPICED = ["Cinnamon", "Chai", "Peppermint", "Creme de Menthe"];
 
 // Chai / Hot Cocoa affinity scoring — these are warm non-coffee bases at Dutch Bros.
 // Scores reflect how well each flavor complements chai or hot cocoa.
@@ -200,6 +200,28 @@ export const getDrinkVibe = d => {
   return "sweet";
 };
 
+export const getDrinkBaseCategory = d => {
+  const hasChai = d.flavors.includes("Chai");
+  const hasWhiteCoffee = d.flavors.includes("White Coffee");
+  const vibe = getDrinkVibe(d);
+
+  if (hasChai || hasWhiteCoffee || ["cozy", "indulgent", "sweet"].includes(vibe)) {
+    return "coffee";
+  } else if (["tropical", "fruity"].includes(vibe)) {
+    return "rebel";
+  } else if (vibe === "fusion") {
+    const hasAnyFruit = d.flavors.some(f => f.includes("Any Fruit"));
+    const fruitishCount = d.flavors.filter(f => FRUITY.includes(f) || f.includes("Float")).length;
+    const sweetCount = d.flavors.filter(f => SWEET.includes(f)).length;
+    if (hasAnyFruit || fruitishCount > sweetCount) {
+      return "rebel";
+    } else {
+      return "coffee";
+    }
+  }
+  return "coffee";
+};
+
 // Removed emojis, mapping them in UI layer
 export const VIBE_META = {
   tropical: { label: "Tropical", color: "#2ED573" },
@@ -217,8 +239,8 @@ export const MOOD_QUESTIONS = [
     id: "base",
     q: "What's your base vibe today?",
     options: [
-      { id: "coffee", label: "Latte / Freeze / Shake", icon: "coffee", filter: d => { const v = getDrinkVibe(d); return ["cozy", "indulgent", "sweet", "fusion"].includes(v); }},
-      { id: "rebel", label: "Rebel / Lemonade / Tea / Soda", icon: "zap", filter: d => { const v = getDrinkVibe(d); return ["tropical", "fruity", "fusion"].includes(v); }},
+      { id: "coffee", label: "Latte / Freeze / Shake", icon: "coffee", filter: d => { const v = getDrinkVibe(d); return ["cozy", "indulgent", "sweet", "fusion"].includes(v); } },
+      { id: "rebel", label: "Rebel / Lemonade / Tea / Soda", icon: "zap", filter: d => { const v = getDrinkVibe(d); return ["tropical", "fruity", "fusion"].includes(v); } },
       { id: "chai", label: "Chai / Hot Cocoa", icon: "leaf", filter: null, scorer: chaiAffinityScore },
       { id: "any_base", label: "Not sure, surprise me", icon: "any", filter: null },
     ]
@@ -227,18 +249,26 @@ export const MOOD_QUESTIONS = [
     id: "profile",
     q: "What flavor profile hits the spot?",
     options: [
-      { id: "choc", label: "Chocolate & Mocha", icon: "chocolate",
-        filter: d => d.flavors.some(f => ["Dark Chocolate","White Chocolate","Mocha","Chocolate Mac"].includes(f)),
-        scorer: d => d.flavors.filter(f => ["Dark Chocolate","White Chocolate","Mocha","Chocolate Mac"].includes(f)).length },
-      { id: "caramel", label: "Caramel & Vanilla", icon: "caramel",
-        filter: d => d.flavors.some(f => ["Caramel","Salted Caramel","Vanilla","Hazelnut","Almond"].includes(f)),
-        scorer: d => d.flavors.filter(f => ["Caramel","Salted Caramel","Vanilla","Hazelnut","Almond"].includes(f)).length },
-      { id: "fruity", label: "Fruit & Citrus", icon: "fruity",
+      {
+        id: "choc", label: "Chocolate & Mocha", icon: "chocolate",
+        filter: d => d.flavors.some(f => ["Dark Chocolate", "White Chocolate", "Mocha", "Chocolate Mac"].includes(f)),
+        scorer: d => d.flavors.filter(f => ["Dark Chocolate", "White Chocolate", "Mocha", "Chocolate Mac"].includes(f)).length
+      },
+      {
+        id: "caramel", label: "Caramel & Vanilla", icon: "caramel",
+        filter: d => d.flavors.some(f => ["Caramel", "Salted Caramel", "Vanilla", "Hazelnut", "Almond"].includes(f)),
+        scorer: d => d.flavors.filter(f => ["Caramel", "Salted Caramel", "Vanilla", "Hazelnut", "Almond"].includes(f)).length
+      },
+      {
+        id: "fruity", label: "Fruit & Citrus", icon: "fruity",
         filter: d => d.flavors.some(f => FRUITY.includes(f)),
-        scorer: d => d.flavors.filter(f => FRUITY.includes(f) || f === "Coconut").length },
-      { id: "mint", label: "Mint or Spice", icon: "mint",
+        scorer: d => d.flavors.filter(f => FRUITY.includes(f) || f === "Coconut").length
+      },
+      {
+        id: "mint", label: "Mint or Spice", icon: "mint",
         filter: d => d.flavors.some(f => MINTY_SPICED.includes(f)),
-        scorer: d => d.flavors.filter(f => MINTY_SPICED.includes(f)).length },
+        scorer: d => d.flavors.filter(f => MINTY_SPICED.includes(f)).length
+      },
       { id: "any_profile", label: "Anything goes", icon: "any", filter: null },
     ]
   },
@@ -255,15 +285,21 @@ export const getThirdQuestion = (answers) => {
       id: "fruit_type",
       q: "Any specific fruit flavors?",
       options: [
-        { label: "Berry (Strawberry, Raspberry, Cherry, Blackberry)", icon: "berry",
-          filter: d => d.flavors.some(f => ["Strawberry","Raspberry","Blackberry","Blue Raz","Cherry"].includes(f)),
-          scorer: d => d.flavors.filter(f => ["Strawberry","Raspberry","Blackberry","Blue Raz","Cherry"].includes(f)).length },
-        { label: "Tropical (Coconut, Banana, Passion Fruit, Kiwi)", icon: "coconut",
-          filter: d => d.flavors.some(f => ["Coconut","Banana","Passion Fruit","Kiwi","Watermelon"].includes(f)),
-          scorer: d => d.flavors.filter(f => ["Coconut","Banana","Passion Fruit","Kiwi","Watermelon"].includes(f)).length },
-        { label: "Citrus & Stonefruit (Peach, Orange, Lime, Grapefruit)", icon: "refreshing",
-          filter: d => d.flavors.some(f => ["Peach","Orange","Lime","Grapefruit","Pomegranate"].includes(f)),
-          scorer: d => d.flavors.filter(f => ["Peach","Orange","Lime","Grapefruit","Pomegranate"].includes(f)).length },
+        {
+          label: "Berry (Strawberry, Raspberry, Cherry, Blackberry)", icon: "berry",
+          filter: d => d.flavors.some(f => ["Strawberry", "Raspberry", "Blackberry", "Blue Raz", "Cherry"].includes(f)),
+          scorer: d => d.flavors.filter(f => ["Strawberry", "Raspberry", "Blackberry", "Blue Raz", "Cherry"].includes(f)).length
+        },
+        {
+          label: "Tropical (Coconut, Banana, Passion Fruit, Kiwi)", icon: "coconut",
+          filter: d => d.flavors.some(f => ["Coconut", "Banana", "Passion Fruit", "Kiwi", "Watermelon"].includes(f)),
+          scorer: d => d.flavors.filter(f => ["Coconut", "Banana", "Passion Fruit", "Kiwi", "Watermelon"].includes(f)).length
+        },
+        {
+          label: "Citrus & Stonefruit (Peach, Orange, Lime, Grapefruit)", icon: "refreshing",
+          filter: d => d.flavors.some(f => ["Peach", "Orange", "Lime", "Grapefruit", "Pomegranate"].includes(f)),
+          scorer: d => d.flavors.filter(f => ["Peach", "Orange", "Lime", "Grapefruit", "Pomegranate"].includes(f)).length
+        },
         { label: "Surprise me", icon: "any", filter: null },
       ]
     };
