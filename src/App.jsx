@@ -99,13 +99,13 @@ export default function App() {
 
         {/* Footer */}
         <footer className="mt-20 pt-8 border-t border-white/5 text-center text-xs text-gray-500 pb-12 flex flex-col items-center gap-4">
-          <p>Not affiliated with Dutch Bros Coffee.</p>
+          <p>Made by fans. Not affiliated with Dutch Bros Coffee.</p>
           <button
             onClick={() => setFeedbackOpen(true)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-300 border border-white/5 hover:border-white/10 hover:shadow-lg hover:shadow-black/20"
           >
             <MessageSquare size={14} />
-            <span className="font-medium">Report an Issue or Suggestion</span>
+            <span className="font-medium">Send Feedback</span>
           </button>
         </footer>
       </div>
