@@ -1,4 +1,5 @@
 import React, { useState, lazy, Suspense } from "react";
+import { Routes, Route, NavLink, useNavigate, Navigate } from "react-router-dom";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { DRINKS } from "./data/drinks";
 import ExploreTab from "./components/ExploreTab";
@@ -8,7 +9,7 @@ const MoodTab = lazy(() => import("./components/MoodTab"));
 const FlavorTab = lazy(() => import("./components/FlavorTab"));
 
 export default function App() {
-  const [tab, setTab] = useState("explore");
+  const navigate = useNavigate();
   const [resetKey, setResetKey] = useState(0);
 
   // State lifting for Flavor map cross-navigation
@@ -16,27 +17,30 @@ export default function App() {
 
   const goToExploreWithFlavors = (flavors) => {
     setExploreFlavorSearch(flavors);
-    setTab("explore");
+    navigate("/");
   };
 
-  const navButton = (t, label, Icon) => {
-    const active = tab === t;
-    return (
-      <button
-        key={t}
-        onClick={() => setTab(t)}
-        className={`
-          flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all duration-300
-          ${active
-            ? 'bg-gradient-to-r from-blue-500 to-sky-500 text-white shadow-lg shadow-blue-500/25 scale-105'
-            : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'}
-        `}
-      >
-        <Icon size={16} />
-        {label}
-      </button>
-    );
+  const handleLogoClick = () => {
+    navigate("/");
+    setResetKey(k => k + 1);
   };
+
+  const navLink = (to, label, Icon, end = false) => (
+    <NavLink
+      key={to}
+      to={to}
+      end={end}
+      className={({ isActive }) => `
+        flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all duration-300
+        ${isActive
+          ? 'bg-gradient-to-r from-blue-500 to-sky-500 text-white shadow-lg shadow-blue-500/25 scale-105'
+          : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'}
+      `}
+    >
+      <Icon size={16} />
+      {label}
+    </NavLink>
+  );
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30">
@@ -50,10 +54,10 @@ export default function App() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Header */}
         <header className="text-center mb-10 pb-8 border-b border-white/5">
-          <div className="inline-block mb-3 cursor-pointer" onClick={() => { setTab("explore"); setResetKey(k => k + 1); }}>
+          <div className="inline-block mb-3 cursor-pointer" onClick={handleLogoClick}>
             <span className="text-4xl filter drop-shadow-lg scale-110 inline-block">❤️</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-400 cursor-pointer" onClick={() => { setTab("explore"); setResetKey(k => k + 1); }}>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-400 cursor-pointer" onClick={handleLogoClick}>
             Dutch Bros Secret Menu
           </h1>
           <p className="text-gray-400 text-sm sm:text-base font-medium max-w-xl mx-auto mb-8">
@@ -62,18 +66,21 @@ export default function App() {
 
           {/* Navigation */}
           <nav className="flex flex-wrap justify-center gap-3 sm:gap-4">
-            {navButton("explore", "Explore", Coffee)}
-            {navButton("mood", "Pick My Drink", Dices)}
-            {navButton("flavors", "Flavor Map", Map)}
+            {navLink("/", "Explore", Coffee, true)}
+            {navLink("/mood", "Pick My Drink", Dices)}
+            {navLink("/flavors", "Flavor Map", Map)}
           </nav>
         </header>
 
         {/* Main Content Area */}
         <main className="min-h-[50vh]">
-          {tab === "explore" && <ExploreTab initialFlavors={exploreFlavorSearch} onInitialFlavorsConsumed={() => setExploreFlavorSearch(null)} resetKey={resetKey} />}
           <Suspense fallback={null}>
-            {tab === "mood" && <MoodTab />}
-            {tab === "flavors" && <FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />}
+            <Routes>
+              <Route path="/" element={<ExploreTab initialFlavors={exploreFlavorSearch} onInitialFlavorsConsumed={() => setExploreFlavorSearch(null)} resetKey={resetKey} />} />
+              <Route path="/mood" element={<MoodTab />} />
+              <Route path="/flavors" element={<FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
           </Suspense>
         </main>
 
