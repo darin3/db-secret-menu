@@ -248,18 +248,18 @@ export default function MoodTab() {
                         {moodResult.length > 0 ? "Here are your picks!" : "No exact matches found"}
                     </h2>
 
-                    <div className="mb-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <div className="mb-8 flex flex-row items-center justify-center gap-3">
                         {resultPool && resultPool.length > 5 && (
                             <button
                                 onClick={shuffleResults}
-                                className="px-6 py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:text-blue-300 transition-colors w-full sm:w-auto"
+                                className="px-6 py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30 hover:text-blue-300 transition-colors"
                             >
                                 <RotateCw size={18} /> Shuffle
                             </button>
                         )}
                         <button
                             onClick={resetMood}
-                            className="px-6 py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 transition-colors w-full sm:w-auto"
+                            className="px-6 py-3.5 rounded-full font-bold flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 transition-colors"
                         >
                             <RefreshCw size={18} /> Start Over
                         </button>
