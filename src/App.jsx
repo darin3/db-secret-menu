@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, NavLink, useNavigate, Navigate } from "react-router-dom";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { DRINKS } from "./data/drinks";
@@ -11,6 +11,15 @@ const FlavorTab = lazy(() => import("./components/FlavorTab"));
 export default function App() {
   const navigate = useNavigate();
   const [resetKey, setResetKey] = useState(0);
+
+  // Dismiss loader and restore scrolling once React mounts
+  useEffect(() => {
+    const loader = document.getElementById("loader-container");
+    if (loader) {
+      loader.style.display = "none";
+    }
+    document.body.style.overflow = "";
+  }, []);
 
   // State lifting for Flavor map cross-navigation
   const [exploreFlavorSearch, setExploreFlavorSearch] = useState(null);
@@ -67,7 +76,7 @@ export default function App() {
           {/* Navigation */}
           <nav className="flex flex-wrap justify-center gap-3 sm:gap-4">
             {navLink("/", "Explore", Coffee, true)}
-            {navLink("/mood", "Pick My Drink", Dices)}
+            {navLink("/discover", "Pick My Drink", Dices)}
             {navLink("/flavors", "Flavor Map", Map)}
           </nav>
         </header>
@@ -77,7 +86,7 @@ export default function App() {
           <Suspense fallback={null}>
             <Routes>
               <Route path="/" element={<ExploreTab initialFlavors={exploreFlavorSearch} onInitialFlavorsConsumed={() => setExploreFlavorSearch(null)} resetKey={resetKey} />} />
-              <Route path="/mood" element={<MoodTab />} />
+              <Route path="/discover" element={<MoodTab />} />
               <Route path="/flavors" element={<FlavorTab goToExploreWithFlavors={goToExploreWithFlavors} />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

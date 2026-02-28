@@ -8,20 +8,18 @@
   <title>Dutch Bros Secret Menu</title>
 </head>
 
-<body style="margin:0;background:#0a0a0a">
-  <div id="root">
-    <div
-      style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,sans-serif;padding:1rem;text-align:center;">
-      <div style="font-size:3rem;margin-bottom:0.75rem;animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">❤️
-      </div>
-      <h1
-        style="font-size:2rem;font-weight:900;margin:0 0 1rem;background:linear-gradient(to right,#38bdf8,#60a5fa,#22d3ee);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.025em;">
-        Dutch Bros Secret Menu</h1>
-      <p
-        style="color:#6b7280;font-size:0.95rem;margin:0;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">
-        Loading...</p>
+<body style="margin:0;background:#0a0a0a;overflow:hidden">
+  <div id="loader-container"
+    style="position:fixed;inset:0;z-index:9999;background:#0a0a0a;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,sans-serif;padding:1rem;text-align:center;">
+    <div style="font-size:3rem;margin-bottom:0.75rem;animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">❤️
     </div>
+    <h1
+      style="font-size:2rem;font-weight:900;margin:0 0 1rem;background:linear-gradient(to right,#38bdf8,#60a5fa,#22d3ee);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.025em;">
+      Dutch Bros Secret Menu</h1>
+    <p style="color:#6b7280;font-size:0.95rem;margin:0;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">
+      Loading...</p>
   </div>
+  <div id="root"></div>
   <style>
     @keyframes pulse {
 
