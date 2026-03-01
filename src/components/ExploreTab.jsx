@@ -58,7 +58,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
                 if (!d.name.toLowerCase().includes(s) && !d.aka?.toLowerCase().includes(s) && !allFlavors(d).some(f => f.toLowerCase().includes(s))) return false;
             }
             if (selBase) {
-                if (getDrinkBaseCategory(d) !== selBase) return false;
+                if (!getDrinkBaseCategory(d).includes(selBase)) return false;
             }
             if (selVibes.length) {
                 const vibe = getDrinkVibe(d);

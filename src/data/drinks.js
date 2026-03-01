@@ -272,26 +272,26 @@ export const getDrinkVibe = d => {
   return "sweet";
 };
 
+const LATTE_UNFRIENDLY = [F.LIME, F.KIWI, F.POMEGRANATE, F.PASSION_FRUIT];
+
 export const getDrinkBaseCategory = d => {
   const hasChai = d.flavors.includes(F.CHAI) || (d.toppings || []).includes(T.CHAI);
   const hasWhiteCoffee = (d.toppings || []).includes(T.WHITE_COFFEE);
   const vibe = getDrinkVibe(d);
 
   if (hasChai || hasWhiteCoffee || ["cozy", "indulgent", "sweet"].includes(vibe)) {
-    return "coffee";
+    return ["coffee"];
   } else if (["tropical", "fruity"].includes(vibe)) {
-    return "rebel";
+    return ["rebel"];
   } else if (vibe === "fusion") {
-    const hasAnyFruit = (d.toppings || []).includes(T.ANY_FRUIT_FLAVOR);
-    const fruitishCount = d.flavors.filter(f => FRUITY.includes(f)).length + (d.toppings || []).filter(f => f.includes("Float")).length;
-    const sweetCount = d.flavors.filter(f => SWEET.includes(f)).length;
-    if (hasAnyFruit || fruitishCount > sweetCount) {
-      return "rebel";
-    } else {
-      return "coffee";
+    const hasFloat = (d.toppings || []).some(f => f.includes("Float"));
+    const hasLatteUnfriendly = d.flavors.some(f => LATTE_UNFRIENDLY.includes(f));
+    if (hasFloat || hasLatteUnfriendly) {
+      return ["rebel"];
     }
+    return ["coffee", "rebel"];
   }
-  return "coffee";
+  return ["coffee"];
 };
 
 // Removed emojis, mapping them in UI layer

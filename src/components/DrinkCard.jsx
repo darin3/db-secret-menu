@@ -44,11 +44,13 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
             if (hasAnyFruit) {
                 baseTypes = ["rebel", "soda", "shake"];
             } else {
-                const baseCategory = getDrinkBaseCategory(drink);
-                if (baseCategory === "rebel") {
+                const baseCats = getDrinkBaseCategory(drink);
+                if (baseCats.includes("coffee") && baseCats.includes("rebel")) {
+                    baseTypes = ["latte", "freeze", "shake", "rebel", "soda"];
+                } else if (baseCats.includes("rebel")) {
                     baseTypes = ["rebel", "soda", "shake", "freeze"];
                 } else {
-                    baseTypes = ["latte", "freeze", "shake", "rebel", "soda"];
+                    baseTypes = ["latte", "freeze", "shake"];
                 }
             }
         } else if (["cozy", "indulgent", "sweet"].includes(vibe)) {
