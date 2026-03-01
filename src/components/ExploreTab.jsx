@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { DRINKS, ACTIVE_VIBES, VIBE_META, ALL_CORE_FLAVORS, FLAVOR_COLORS, getDrinkVibe, getDrinkBaseCategory } from '../data/drinks';
+import { DRINKS, ACTIVE_VIBES, VIBE_META, ALL_CORE_FLAVORS, FLAVOR_COLORS, getDrinkVibe, getDrinkBaseCategory, allFlavors } from '../data/drinks';
 import FilterChip from './FilterChip';
 import DrinkCard from './DrinkCard';
 import {
@@ -13,7 +13,7 @@ import {
     Sparkles,
     Candy,
     Coffee,
-    Snowflake,
+    Leaf,
     Coffee as CoffeeIcon,
     Clipboard,
     Check
@@ -26,7 +26,7 @@ const VIBE_ICONS = {
     indulgent: CoffeeIcon,
     sweet: Candy,
     cozy: Coffee,
-    seasonal: Snowflake,
+    seasonal: Leaf,
 };
 export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, resetKey }) {
     const [search, setSearch] = useState("");
@@ -57,7 +57,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
         return DRINKS.filter(d => {
             if (search) {
                 const s = search.toLowerCase();
-                if (!d.name.toLowerCase().includes(s) && !d.aka?.toLowerCase().includes(s) && !d.flavors.some(f => f.toLowerCase().includes(s))) return false;
+                if (!d.name.toLowerCase().includes(s) && !d.aka?.toLowerCase().includes(s) && !allFlavors(d).some(f => f.toLowerCase().includes(s))) return false;
             }
             if (selBase) {
                 if (getDrinkBaseCategory(d) !== selBase) return false;
@@ -76,7 +76,7 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
         if (!filtered.length) return;
         const textToCopy = [...filtered]
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map(d => `${d.name}: ${d.flavors.join(', ')}`)
+            .map(d => `${d.name}: ${allFlavors(d).join(', ')}`)
             .join('\n');
 
         navigator.clipboard.writeText(textToCopy);

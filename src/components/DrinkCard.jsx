@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
-import { getDrinkVibe, getDrinkBaseCategory, VIBE_META, FLAVOR_COLORS, isCoreFlavor, FRUITY, SWEET } from '../data/drinks';
+import { F, T, getDrinkVibe, getDrinkBaseCategory, getDrinkAvail, VIBE_META, FLAVOR_COLORS } from '../data/drinks';
 import {
     Palmtree,
     Cherry,
     Sparkles,
     Candy,
     Coffee,
-    Snowflake,
+    Leaf,
     Info
 } from 'lucide-react';
 
@@ -20,17 +20,20 @@ const VIBE_ICONS = {
     indulgent: Coffee, // using Coffee as a stand-in for indulgent/chocolate
     sweet: Candy,
     cozy: Coffee,
-    seasonal: Snowflake,
+    seasonal: Leaf,
 };
 
 export default function DrinkCard({ drink, open = false, onToggle }) {
     const vibe = getDrinkVibe(drink);
     const vm = VIBE_META[vibe] || VIBE_META.sweet;
     const Icon = VIBE_ICONS[vibe] || Candy;
+    const avail = getDrinkAvail(drink);
+    const displayFlavors = useMemo(() => [...drink.flavors].sort(), [drink.flavors]);
+    const displayToppings = useMemo(() => [...(drink.toppings || [])].sort(), [drink.toppings]);
 
     const orderExample = useMemo(() => {
-        const hasChai = drink.flavors.includes("Chai");
-        const hasWhiteCoffee = drink.flavors.includes("White Coffee");
+        const hasChai = drink.flavors.includes(F.CHAI) || (drink.toppings || []).includes(T.CHAI);
+        const hasWhiteCoffee = (drink.toppings || []).includes(T.WHITE_COFFEE);
 
         // Build array of valid base types
         let baseTypes;
@@ -39,7 +42,7 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
         } else if (hasWhiteCoffee) {
             baseTypes = ["white coffee latte", "white coffee freeze", "white coffee shake", "white coffee chai", "white coffee cold brew"];
         } else if (vibe === "fusion") {
-            const hasAnyFruit = drink.flavors.some(f => f.includes("Any Fruit"));
+            const hasAnyFruit = (drink.toppings || []).includes(T.ANY_FRUIT_FLAVOR);
             if (hasAnyFruit) {
                 baseTypes = ["rebel", "soda", "shake"];
             } else {
@@ -108,8 +111,8 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
                 </div>
             )}
 
-            {/* Tags (Seasonal/Limited) */}
-            {(drink.seasonal || drink.limited) && (
+            {/* Tags (Seasonal/Limited via getDrinkAvail) */}
+            {avail && (
                 <div className="flex flex-wrap gap-2 mb-2 mt-1">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-gray-400 flex items-center gap-1">
                         <Info size={10} /> Check availability
@@ -117,28 +120,33 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
                 </div>
             )}
 
-            {/* Flavor Chips */}
+            {/* Flavor Chips — core flavors (solid), then toppings (dashed), each sorted */}
             <div className="flex flex-wrap items-start content-start gap-1.5 mt-2 flex-grow">
-                {drink.flavors.map(f => {
+                {displayFlavors.map(f => {
                     const c = FLAVOR_COLORS[f] || "#888";
-                    const isSp = !isCoreFlavor(f);
                     return (
                         <span
                             key={f}
-                            className={`
-                px-2 py-0.5 rounded-lg text-[11px] font-semibold
-                ${isSp ? 'border border-dashed text-gray-400 italic bg-white/5' : 'border'}
-              `}
-                            style={!isSp ? {
+                            className="px-2 py-0.5 rounded-lg text-[11px] font-semibold border"
+                            style={{
                                 backgroundColor: `${c}22`,
                                 color: c,
                                 borderColor: `${c}44`,
-                            } : { borderColor: '#444' }}
+                            }}
                         >
                             {f}
                         </span>
                     );
                 })}
+                {displayToppings.map(f => (
+                    <span
+                        key={f}
+                        className="px-2 py-0.5 rounded-lg text-[11px] font-semibold border border-dashed text-gray-400 italic bg-white/5"
+                        style={{ borderColor: '#444' }}
+                    >
+                        {f}
+                    </span>
+                ))}
             </div>
 
             {/* Expanded State: How to order */}
@@ -149,10 +157,10 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
                     <div className="pt-3 border-t border-white/10">
 
                         {(() => {
-                            const coreFlavors = drink.flavors.filter(isCoreFlavor);
-                            const floats = drink.flavors.filter(f => f.includes("Float"));
-                            const drizzles = drink.flavors.filter(f => f.includes("Drizzle"));
-                            const sprinks = drink.flavors.filter(f => f.includes("Sprinks"));
+                            const toppings = drink.toppings || [];
+                            const floats = toppings.filter(f => f.includes("Float"));
+                            const drizzles = toppings.filter(f => f.includes("Drizzle"));
+                            const sprinks = toppings.filter(f => f.includes("Sprinks"));
                             const modifiers = [
                                 floats.length > 0 && `${floats.join(" & ")} on top`,
                                 drizzles.length > 0 && `${drizzles.join(" & ")}`,
@@ -175,7 +183,7 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
                                             {modifiers.length > 0 && <>, with {modifiers.join(" and ")}</>}?"
                                         </p>
                                         <p className="mt-2 text-gray-400">
-                                            Flavors: <span className="text-gray-200">{coreFlavors.map(orderName).join(", ")}</span>
+                                            Flavors: <span className="text-gray-200">{displayFlavors.map(orderName).join(", ")}</span>
                                             {modifiers.length > 0 && <> + {modifiers.join(", ")}</>}
                                         </p>
                                     </div>
