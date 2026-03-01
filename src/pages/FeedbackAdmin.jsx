@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Lock, Inbox, Archive, Trash2, CheckSquare, Square,
   AlertCircle, Lightbulb, Bug, HelpCircle, RefreshCw,
 } from "lucide-react";
 
+const PAGE_NAMES = { "/": "Explore", "/discover": "Pick My Drink", "/map": "Flavor Map" };
+
 const TYPE_META = {
-  drink_issue: { label: "Menu Correction", icon: AlertCircle, color: "text-red-400", bg: "bg-red-400/10" },
+  drink_issue: { label: "Drink Menu", icon: AlertCircle, color: "text-red-400", bg: "bg-red-400/10" },
   suggestion: { label: "Suggestion", icon: Lightbulb, color: "text-blue-400", bg: "bg-blue-400/10" },
   bug: { label: "Bug / Other", icon: Bug, color: "text-orange-400", bg: "bg-orange-400/10" },
   other: { label: "Other", icon: HelpCircle, color: "text-gray-400", bg: "bg-gray-400/10" },
@@ -27,8 +29,8 @@ export default function FeedbackAdmin() {
 
   const [tab, setTab] = useState("open");
   const [typeFilter, setTypeFilter] = useState(null);
-  const [submissions, setSubmissions] = useState([]);
-  const [counts, setCounts] = useState({ open: 0, archived: 0 });
+  // Cache both tabs in a single object
+  const [allData, setAllData] = useState({ open: [], archived: [] });
   const [selected, setSelected] = useState(new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -38,29 +40,30 @@ export default function FeedbackAdmin() {
     Authorization: `Bearer ${password}`,
   }), [password]);
 
-  const fetchData = useCallback(async () => {
+  // Fetch both tabs at once
+  const fetchAll = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`/api/feedback?status=${tab}`, {
-        headers: authHeaders(),
-      });
-      if (res.status === 401) {
+      const [openRes, archivedRes] = await Promise.all([
+        fetch("/api/feedback?status=open", { headers: authHeaders() }),
+        fetch("/api/feedback?status=archived", { headers: authHeaders() }),
+      ]);
+      if (openRes.status === 401 || archivedRes.status === 401) {
         setAuthed(false);
         sessionStorage.removeItem("admin_pw");
         return;
       }
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-      setSubmissions(data.submissions);
-      setCounts(data.counts);
+      if (!openRes.ok || !archivedRes.ok) throw new Error("Failed to fetch");
+      const [openData, archivedData] = await Promise.all([openRes.json(), archivedRes.json()]);
+      setAllData({ open: openData.submissions, archived: archivedData.submissions });
       setSelected(new Set());
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [tab, authHeaders]);
+  }, [authHeaders]);
 
   // Try stored password on mount
   useEffect(() => {
@@ -71,8 +74,8 @@ export default function FeedbackAdmin() {
   }, []);
 
   useEffect(() => {
-    if (authed) fetchData();
-  }, [authed, tab, fetchData]);
+    if (authed) fetchAll();
+  }, [authed, fetchAll]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -91,32 +94,53 @@ export default function FeedbackAdmin() {
     }
   };
 
+  // Optimistic archive: move items from open → archived (or vice versa) locally
+  const optimisticArchive = (ids) => {
+    setAllData(prev => {
+      const idSet = new Set(ids);
+      const moving = prev.open.filter(s => idSet.has(s.id));
+      return {
+        open: prev.open.filter(s => !idSet.has(s.id)),
+        archived: [...moving.map(s => ({ ...s, status: "archived" })), ...prev.archived],
+      };
+    });
+    setSelected(new Set());
+  };
+
+  // Optimistic delete: remove items from current tab
+  const optimisticDelete = (ids) => {
+    const idSet = new Set(ids);
+    setAllData(prev => ({
+      open: prev.open.filter(s => !idSet.has(s.id)),
+      archived: prev.archived.filter(s => !idSet.has(s.id)),
+    }));
+    setSelected(new Set());
+  };
+
   const bulkAction = async (action) => {
     if (selected.size === 0) return;
     const ids = [...selected];
-    const endpoint = action === "archive" ? "/api/feedback/archive" : "/api/feedback/delete";
-    await fetch(endpoint, {
-      method: "POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ ids }),
-    });
-    fetchData();
+    if (action === "archive") {
+      optimisticArchive(ids);
+      fetch("/api/feedback/archive", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids }) })
+        .catch(() => fetchAll());
+    } else {
+      optimisticDelete(ids);
+      fetch("/api/feedback/delete", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids }) })
+        .catch(() => fetchAll());
+    }
   };
 
   const singleAction = async (id, action) => {
-    if (action === "delete") {
-      await fetch(`/api/feedback/${id}`, {
-        method: "DELETE",
-        headers: authHeaders(),
-      });
-    } else if (action === "archive") {
-      await fetch("/api/feedback/archive", {
-        method: "POST",
-        headers: authHeaders(),
-        body: JSON.stringify({ ids: [id] }),
-      });
+    if (action === "archive") {
+      optimisticArchive([id]);
+      fetch("/api/feedback/archive", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids: [id] }) })
+        .catch(() => fetchAll());
+    } else if (action === "delete") {
+      optimisticDelete([id]);
+      fetch(`/api/feedback/${id}`, { method: "DELETE", headers: authHeaders() })
+        .catch(() => fetchAll());
     }
-    fetchData();
   };
 
   const toggleSelect = (id) => {
@@ -128,6 +152,11 @@ export default function FeedbackAdmin() {
     });
   };
 
+  const submissions = allData[tab] || [];
+  const filtered = typeFilter
+    ? submissions.filter((s) => s.type === typeFilter)
+    : submissions;
+
   const toggleAll = () => {
     if (selected.size === filtered.length) {
       setSelected(new Set());
@@ -136,17 +165,15 @@ export default function FeedbackAdmin() {
     }
   };
 
-  const filtered = typeFilter
-    ? submissions.filter((s) => s.type === typeFilter)
-    : submissions;
-
-  // Stats for current submissions
+  // Stats for current tab
   const stats = {
     total: submissions.length,
     drink_issue: submissions.filter((s) => s.type === "drink_issue").length,
     suggestion: submissions.filter((s) => s.type === "suggestion").length,
     bug: submissions.filter((s) => s.type === "bug").length,
   };
+
+  const counts = { open: allData.open.length, archived: allData.archived.length };
 
   if (!authed) {
     return (
@@ -186,7 +213,7 @@ export default function FeedbackAdmin() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Feedback Admin</h1>
           <button
-            onClick={fetchData}
+            onClick={fetchAll}
             className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
             title="Refresh"
           >
@@ -212,7 +239,7 @@ export default function FeedbackAdmin() {
         {/* Tabs */}
         <div className="flex items-center gap-2 mb-4">
           <button
-            onClick={() => { setTab("open"); setTypeFilter(null); }}
+            onClick={() => { setTab("open"); setTypeFilter(null); setSelected(new Set()); }}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               tab === "open"
                 ? "bg-gradient-to-r from-blue-500 to-sky-500 text-white"
@@ -223,7 +250,7 @@ export default function FeedbackAdmin() {
             Inbox ({counts.open})
           </button>
           <button
-            onClick={() => { setTab("archived"); setTypeFilter(null); }}
+            onClick={() => { setTab("archived"); setTypeFilter(null); setSelected(new Set()); }}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               tab === "archived"
                 ? "bg-gradient-to-r from-blue-500 to-sky-500 text-white"
@@ -356,7 +383,7 @@ export default function FeedbackAdmin() {
                       {/* Meta row */}
                       <div className="flex items-center gap-4 text-xs text-gray-600">
                         {s.contact_email && <span>📧 {s.contact_email}</span>}
-                        {s.page_context && <span>📄 {s.page_context}</span>}
+                        {s.page_context && <span>📄 {PAGE_NAMES[s.page_context] || s.page_context}</span>}
                       </div>
                     </div>
 

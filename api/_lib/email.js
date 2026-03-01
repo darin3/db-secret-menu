@@ -42,8 +42,10 @@ export async function sendFeedbackEmail(submission) {
   if (submission.contact_email) {
     metaRows.push(`<tr><td style="padding: 6px 12px 6px 0; color: #888; white-space: nowrap;">Email</td><td style="padding: 6px 0;"><a href="mailto:${submission.contact_email}" style="color: #60a5fa; text-decoration: none;">${submission.contact_email}</a></td></tr>`);
   }
-  if (submission.page_context && submission.page_context !== "/") {
-    metaRows.push(`<tr><td style="padding: 6px 12px 6px 0; color: #888; white-space: nowrap;">Page</td><td style="padding: 6px 0; color: #ccc;">${submission.page_context}</td></tr>`);
+  const PAGE_NAMES = { "/": "Explore", "/discover": "Pick My Drink", "/map": "Flavor Map" };
+  if (submission.page_context) {
+    const pageName = PAGE_NAMES[submission.page_context] || submission.page_context;
+    metaRows.push(`<tr><td style="padding: 6px 12px 6px 0; color: #888; white-space: nowrap;">Page</td><td style="padding: 6px 0; color: #ccc;">${pageName}</td></tr>`);
   }
 
   const html = `
