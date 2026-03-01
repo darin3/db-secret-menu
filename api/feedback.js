@@ -47,10 +47,12 @@ async function handlePost(req, res) {
     return res.status(500).json({ error: "Failed to save feedback" });
   }
 
-  // Fire-and-forget email
-  sendFeedbackEmail({ ...row, id: data.id }).catch((err) =>
-    console.error("Email send error:", err)
-  );
+  // Send email notification (await so Vercel doesn't kill the function early)
+  try {
+    await sendFeedbackEmail({ ...row, id: data.id });
+  } catch (err) {
+    console.error("Email send error:", err);
+  }
 
   return res.status(201).json({ success: true, id: data.id });
 }
