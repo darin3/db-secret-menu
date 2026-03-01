@@ -5,7 +5,7 @@ import { DRINKS } from "../data/drinks";
 const TYPES = [
   { value: "drink_issue", label: "Drink Menu", icon: "🥤" },
   { value: "suggestion", label: "Suggestion", icon: "💡" },
-  { value: "bug", label: "Bug / Other", icon: "🐛" },
+  { value: "bug", label: "General", icon: "💬" },
 ];
 
 const CATEGORIES_BY_TYPE = {
