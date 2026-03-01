@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, NavLink, useNavigate, Navigate } from "react-router-dom";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 import { DRINKS } from "./data/drinks";
 import ExploreTab from "./components/ExploreTab";
 import FeedbackModal from "./components/FeedbackModal";
@@ -110,6 +111,7 @@ export default function App() {
         </footer>
       </div>
       <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+      <Analytics />
       <SpeedInsights />
     </div>
   );
