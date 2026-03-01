@@ -46,7 +46,7 @@ export default function FeedbackModal({ open, onClose }) {
   useEffect(() => {
     if (!open) return;
     setType("drink_issue"); // Default to Drink Menu when opened
-    const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+    const handleKey = (e) => { if (e.key === "Escape") handleClose(); };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [open, onClose]);
@@ -146,7 +146,6 @@ export default function FeedbackModal({ open, onClose }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-      onClick={handleClose}
     >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300" />
@@ -154,7 +153,6 @@ export default function FeedbackModal({ open, onClose }) {
       {/* Modal */}
       <div
         className="relative w-full max-w-lg bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-xl shadow-black/50 overflow-hidden flex flex-col max-h-full animate-fade-in-up"
-        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 shrink-0 bg-[#0a0a0a]">
