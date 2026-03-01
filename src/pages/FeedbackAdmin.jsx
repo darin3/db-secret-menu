@@ -198,7 +198,7 @@ export default function FeedbackAdmin() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-4">
+      <div className="flex items-center justify-center py-16">
         <form onSubmit={handleLogin} className="w-full max-w-sm">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
             <Lock size={32} className="mx-auto mb-4 text-gray-400" />
