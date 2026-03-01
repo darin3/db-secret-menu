@@ -11,14 +11,17 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { ids } = req.body || {};
+  const { ids, status = "archived" } = req.body || {};
   if (!Array.isArray(ids) || ids.length === 0) {
     return res.status(400).json({ error: "ids array is required" });
+  }
+  if (!["archived", "open"].includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
   }
 
   const { error } = await supabase
     .from("feedback_submissions")
-    .update({ status: "archived" })
+    .update({ status })
     .in("id", ids);
 
   if (error) {

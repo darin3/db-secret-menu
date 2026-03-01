@@ -94,7 +94,7 @@ export default function FeedbackAdmin() {
     }
   };
 
-  // Optimistic archive: move items from open → archived (or vice versa) locally
+  // Optimistic archive: move items from open → archived locally
   const optimisticArchive = (ids) => {
     setAllData(prev => {
       const idSet = new Set(ids);
@@ -102,6 +102,19 @@ export default function FeedbackAdmin() {
       return {
         open: prev.open.filter(s => !idSet.has(s.id)),
         archived: [...moving.map(s => ({ ...s, status: "archived" })), ...prev.archived],
+      };
+    });
+    setSelected(new Set());
+  };
+
+  // Optimistic unarchive: move items from archived → open locally
+  const optimisticUnarchive = (ids) => {
+    setAllData(prev => {
+      const idSet = new Set(ids);
+      const moving = prev.archived.filter(s => idSet.has(s.id));
+      return {
+        open: [...moving.map(s => ({ ...s, status: "open" })), ...prev.open],
+        archived: prev.archived.filter(s => !idSet.has(s.id)),
       };
     });
     setSelected(new Set());
@@ -124,6 +137,10 @@ export default function FeedbackAdmin() {
       optimisticArchive(ids);
       fetch("/api/feedback/archive", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids }) })
         .catch(() => fetchAll());
+    } else if (action === "unarchive") {
+      optimisticUnarchive(ids);
+      fetch("/api/feedback/archive", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids, status: "open" }) })
+        .catch(() => fetchAll());
     } else {
       optimisticDelete(ids);
       fetch("/api/feedback/delete", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids }) })
@@ -135,6 +152,10 @@ export default function FeedbackAdmin() {
     if (action === "archive") {
       optimisticArchive([id]);
       fetch("/api/feedback/archive", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids: [id] }) })
+        .catch(() => fetchAll());
+    } else if (action === "unarchive") {
+      optimisticUnarchive([id]);
+      fetch("/api/feedback/archive", { method: "POST", headers: authHeaders(), body: JSON.stringify({ ids: [id], status: "open" }) })
         .catch(() => fetchAll());
     } else if (action === "delete") {
       optimisticDelete([id]);
@@ -207,8 +228,8 @@ export default function FeedbackAdmin() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    <div>
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Feedback Admin</h1>
@@ -294,6 +315,14 @@ export default function FeedbackAdmin() {
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors"
                 >
                   <Archive size={13} /> Archive
+                </button>
+              )}
+              {tab === "archived" && (
+                <button
+                  onClick={() => bulkAction("unarchive")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-colors"
+                >
+                  <Inbox size={13} /> Unarchive
                 </button>
               )}
               <button
@@ -396,6 +425,15 @@ export default function FeedbackAdmin() {
                           title="Archive"
                         >
                           <Archive size={14} />
+                        </button>
+                      )}
+                      {tab === "archived" && (
+                        <button
+                          onClick={() => singleAction(s.id, "unarchive")}
+                          className="p-1.5 rounded-lg text-gray-500 hover:text-green-400 hover:bg-green-400/10 transition-colors"
+                          title="Unarchive"
+                        >
+                          <Inbox size={14} />
                         </button>
                       )}
                       <button
