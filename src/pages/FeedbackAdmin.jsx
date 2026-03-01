@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Lock, Inbox, Archive, Trash2, CheckSquare, Square,
-  AlertCircle, Lightbulb, Bug, HelpCircle, RefreshCw,
+  AlertCircle, Lightbulb, Bug, HelpCircle, RefreshCw, LogOut,
 } from "lucide-react";
 
 const PAGE_NAMES = { "/": "Explore", "/discover": "Pick My Drink", "/map": "Flavor Map" };
@@ -233,13 +233,22 @@ export default function FeedbackAdmin() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Feedback Admin</h1>
-          <button
-            onClick={fetchAll}
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-            title="Refresh"
-          >
-            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={fetchAll}
+              className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+              title="Refresh"
+            >
+              <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+            </button>
+            <button
+              onClick={() => { setAuthed(false); setPassword(""); sessionStorage.removeItem("admin_pw"); }}
+              className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+              title="Log out"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
