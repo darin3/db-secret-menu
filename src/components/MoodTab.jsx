@@ -242,9 +242,32 @@ export default function MoodTab() {
                         </div>
                     </div>
 
-                    <h2 className="text-2xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
+                    <h2 className="text-3xl font-black mb-8 mt-10 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
                         {moodResult.length > 0 ? "Here are your picks!" : "No exact matches found"}
                     </h2>
+
+
+
+                    {moodResult.length > 0 ? (
+                        <div className="min-h-[380px]">
+                            {filtersWidened && (
+                                <p className="text-gray-400 text-sm mb-4">We widened your results to find more matches.</p>
+                            )}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-24 sm:pb-0">
+                                {moodResult.map((d) => (
+                                    <div key={d.name} className="text-left">
+                                        <DrinkCard drink={d} open={openCard === d.name} onToggle={() => setOpenCard(prev => prev === d.name ? null : d.name)} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="min-h-[380px]">
+                            <p className="text-gray-400 text-sm mb-4">
+                                We couldn't find drinks matching all your preferences. Try again with different choices!
+                            </p>
+                        </div>
+                    )}
 
                     <div className="fixed sm:relative mx-auto bottom-6 sm:bottom-auto left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0 z-50 sm:z-auto flex flex-row items-center justify-center gap-2 sm:gap-3 bg-gray-900/95 sm:bg-transparent px-2.5 sm:px-0 py-2 sm:py-0 rounded-full sm:rounded-none border border-white/10 sm:border-none shadow-2xl sm:shadow-none backdrop-blur-xl sm:backdrop-blur-none mb-0 sm:mb-8 w-max">
                         <button
@@ -262,25 +285,6 @@ export default function MoodTab() {
                             </button>
                         )}
                     </div>
-
-                    {moodResult.length > 0 ? (
-                        <>
-                            {filtersWidened && (
-                                <p className="text-gray-400 text-sm mb-4">We widened your results to find more matches.</p>
-                            )}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-24 sm:pb-0">
-                                {moodResult.map((d) => (
-                                    <div key={d.name} className="text-left">
-                                        <DrinkCard drink={d} open={openCard === d.name} onToggle={() => setOpenCard(prev => prev === d.name ? null : d.name)} />
-                                    </div>
-                                ))}
-                            </div>
-                        </>
-                    ) : (
-                        <p className="text-gray-400 text-sm mb-4">
-                            We couldn't find drinks matching all your preferences. Try again with different choices!
-                        </p>
-                    )}
 
                 </div>
             )}
