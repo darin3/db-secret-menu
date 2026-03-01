@@ -3,14 +3,14 @@ import nodemailer from "nodemailer";
 const TYPE_COLORS = {
   drink_issue: { bg: "#e74c3c", label: "Drink Menu" },
   suggestion: { bg: "#3498db", label: "Suggestion" },
-  bug: { bg: "#e67e22", label: "General" },
+  bug: { bg: "#e67e22", label: "Bug / Other" },
   other: { bg: "#95a5a6", label: "Other" },
 };
 
 const TYPE_ICONS = {
   drink_issue: "\u{1F964}",
   suggestion: "\u{1F4A1}",
-  bug: "\u{1F4AC}",
+  bug: "\u{1F41B}",
   other: "\u{1F4AC}",
 };
 
