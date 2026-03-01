@@ -29,7 +29,6 @@ import {
 const OPTION_ICONS = {
     coffee: CoffeeIcon,
     zap: Zap,
-    snowflake: Leaf,
     fruity: Cherry,
     chocolate: Cookie,
     caramel: Candy,

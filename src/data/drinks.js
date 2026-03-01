@@ -42,12 +42,13 @@ export const allFlavors = d => [...d.flavors, ...(d.toppings || [])];
 // "seasonal" | "limited" | "discontinued"
 export const FLAVOR_AVAIL = {
   [F.BROWN_BUTTER]: "seasonal",
-  [F.PEPPERMINT]: "seasonal",
+  [F.PEPPERMINT]: "unavailable",
   [F.PINEAPPLE]: "seasonal",
   [T.CHOCOLATE_CRUNCH]: "seasonal",
 };
 
 export const getDrinkAvail = d => {
+  if (d.unavailable) return "unavailable";
   if (d.seasonal) return "seasonal";
   if (d.limited) return "limited";
   const all = allFlavors(d);
@@ -57,7 +58,7 @@ export const getDrinkAvail = d => {
   return null;
 };
 
-export const DRINKS = [
+const ALL_DRINKS = [
   { name: "Aftershock™", aka: null, flavors: [F.STRAWBERRY, F.LIME, F.RASPBERRY, F.BLACKBERRY] },
   { name: "Almond Bar", aka: null, flavors: [F.WHITE_CHOCOLATE, F.ALMOND] },
   { name: "Alpine", aka: "Billy Jean, Chris", flavors: [F.WHITE_CHOCOLATE, F.COCONUT] },
@@ -77,7 +78,7 @@ export const DRINKS = [
   { name: "Cake Batter", aka: null, flavors: [F.CUPCAKE] },
   { name: "Candy Cane", aka: null, flavors: [F.PEPPERMINT], toppings: [T.PEPPERMINT_SPRINKS] },
   { name: "Cherry Blossom", aka: null, flavors: [F.WHITE_CHOCOLATE, F.CHERRY], limited: true },
-  { name: "Christmas Morning", aka: null, flavors: [F.WHITE_CHOCOLATE], toppings: [T.CHAI], seasonal: true },
+  { name: "Christmas Morning", aka: null, flavors: [F.WHITE_CHOCOLATE], toppings: [T.CHAI], unavailable: true },
   { name: "Cinnamon Roll", aka: null, flavors: [F.WHITE_CHOCOLATE, F.CINNAMON] },
   { name: "Cocoa Citrus", aka: "B52", flavors: [F.ORANGE, F.IRISH_CREAM], limited: true },
   { name: "Cookie", aka: null, flavors: [F.WHITE_CHOCOLATE, F.CHOCOLATE_MAC] },
@@ -185,6 +186,8 @@ export const DRINKS = [
   { name: "Yeti", aka: "White Angel", flavors: [F.WHITE_CHOCOLATE, F.COCONUT, F.VANILLA] },
 ];
 
+export const DRINKS = ALL_DRINKS.filter(d => getDrinkAvail(d) !== "unavailable");
+
 export const SPECIAL = ["Float", "Drizzle", "Sprinks", "Any Fruit", "Sweet Cream", "Chocolate Milk", "Topping", "Sauce", "White Coffee"];
 export const isCoreFlavor = f => !SPECIAL.some(s => f.includes(s));
 const coreFlavorSet = new Set();
@@ -195,6 +198,7 @@ export const FRUITY = [F.STRAWBERRY, F.RASPBERRY, F.BLACKBERRY, F.BLUEBERRY, F.B
 export const SWEET = [F.WHITE_CHOCOLATE, F.DARK_CHOCOLATE, F.CHOCOLATE_MAC, F.CARAMEL, F.SALTED_CARAMEL, F.CUPCAKE, F.ALMOND, F.HAZELNUT, F.ALMOND_ROCA, F.VANILLA, F.IRISH_CREAM, F.BROWN_BUTTER];
 export const SPICED = [F.CINNAMON, F.CHAI, F.PEPPERMINT, F.CREME_DE_MENTHE];
 export const MINTY_SPICED = [F.CINNAMON, F.CHAI, F.PEPPERMINT, F.CREME_DE_MENTHE];
+export const TROPICAL_FLAVORS = [F.COCONUT, F.BANANA, F.PASSION_FRUIT, F.KIWI, F.WATERMELON, F.BLUE_RAZ, F.LIME, F.PINEAPPLE, F.MANGO];
 
 // Chai / Hot Cocoa affinity scoring — these are warm non-coffee bases at Dutch Bros.
 // Scores reflect how well each flavor complements chai or hot cocoa.
@@ -233,7 +237,7 @@ export const VIBE_OVERRIDES = {
   "Alpine": "sweet", "Yeti": "sweet", "Golden Eagle": "sweet", "Strawberry Vanilla": "sweet",
   "Flapjack": "cozy", "Horchata": "cozy", "Cinnamon Roll": "cozy", "Snickerdoodle": "cozy",
   "Molten Lava": "cozy", "Mad Moose": "cozy", "Countdown": "cozy",
-  "Shenanigan": "cozy",
+  "Shenanigan": "cozy", "Christmas Morning": "cozy",
   "Hawaiian": "tropical", "Sweet Sunrise": "tropical", "Rocky Point": "tropical",
   "OG Gummy Bear": "tropical", "Tropical": "tropical", "Aquaberry": "tropical",
   "Shark Attack™": "tropical", "Blue Oasis": "tropical", "Double Rainbro™": "tropical",
@@ -250,17 +254,19 @@ export const VIBE_OVERRIDES = {
 export const getDrinkVibe = d => {
   if (VIBE_OVERRIDES[d.name]) return VIBE_OVERRIDES[d.name];
   const core = d.flavors;
-  const fruitCount = core.filter(f => FRUITY.includes(f)).length;
+  const tropCount = core.filter(f => TROPICAL_FLAVORS.includes(f)).length;
+  const coconutBonus = core.includes(F.COCONUT) ? 1 : 0; // Coconut counts double
+  const tropScore = tropCount + coconutBonus;
+  const nonTropFruitCount = core.filter(f => FRUITY.includes(f) && !TROPICAL_FLAVORS.includes(f)).length;
+  const totalFruitish = tropCount + nonTropFruitCount;
   const sweetCount = core.filter(f => SWEET.includes(f)).length;
   const spiceCount = core.filter(f => SPICED.includes(f)).length;
-  if (getDrinkAvail(d) === "seasonal") return "seasonal";
-  if (fruitCount >= 3) return "tropical";
   if (spiceCount > 0 && sweetCount > 0) return "cozy";
   if (spiceCount > 0) return "cozy";
-  if (fruitCount > 0 && sweetCount > 0) return "fusion";
-  if (fruitCount >= 2) return "fruity";
+  if (totalFruitish > 0 && sweetCount > 0) return "fusion";
+  if (totalFruitish >= 2) return tropScore > nonTropFruitCount ? "tropical" : "fruity";
   if (sweetCount >= 2) return "indulgent";
-  if (fruitCount === 1) return "fruity";
+  if (totalFruitish === 1) return "fruity";
   if (sweetCount === 1) return "sweet";
   return "sweet";
 };
@@ -295,7 +301,6 @@ export const VIBE_META = {
   indulgent: { label: "Indulgent", color: "#EAB543" },
   sweet: { label: "Sweet", color: "#FF9FF3" },
   cozy: { label: "Cozy", color: "#FF8E53" },
-  seasonal: { label: "Seasonal", color: "#54A0FF" },
 };
 export const ACTIVE_VIBES = Object.keys(VIBE_META);
 

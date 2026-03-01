@@ -22,7 +22,7 @@ export default function FlavorTab({ goToExploreWithFlavors }) {
                     pairs[key] = (pairs[key] || 0) + 1;
                 }
         });
-        return Object.entries(pairs).sort((a, b) => b[1] - a[1]).slice(0, 20);
+        return Object.entries(pairs).sort((a, b) => b[1] - a[1]).filter(([, count]) => count > 2);
     }, []);
 
     return (

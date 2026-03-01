@@ -6,7 +6,6 @@ import {
     Sparkles,
     Candy,
     Coffee,
-    Leaf,
     Info
 } from 'lucide-react';
 
@@ -20,7 +19,6 @@ const VIBE_ICONS = {
     indulgent: Coffee, // using Coffee as a stand-in for indulgent/chocolate
     sweet: Candy,
     cozy: Coffee,
-    seasonal: Leaf,
 };
 
 export default function DrinkCard({ drink, open = false, onToggle }) {
@@ -115,7 +113,7 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
             {avail && (
                 <div className="flex flex-wrap gap-2 mb-2 mt-1">
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-gray-400 flex items-center gap-1">
-                        <Info size={10} /> Check availability
+                        <Info size={10} /> {avail === "seasonal" ? "Seasonal" : "Limited"} — check availability
                     </span>
                 </div>
             )}

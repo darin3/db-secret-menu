@@ -13,7 +13,6 @@ import {
     Sparkles,
     Candy,
     Coffee,
-    Leaf,
     Coffee as CoffeeIcon,
     Clipboard,
     Check
@@ -26,7 +25,6 @@ const VIBE_ICONS = {
     indulgent: CoffeeIcon,
     sweet: Candy,
     cozy: Coffee,
-    seasonal: Leaf,
 };
 export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, resetKey }) {
     const [search, setSearch] = useState("");
