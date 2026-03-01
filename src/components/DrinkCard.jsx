@@ -66,8 +66,8 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
         }
         // freeze, shake, cold brew, rebel, soda → no temp
 
-        // Build "also works as" from remaining types
-        const alts = baseTypes.filter(t => t !== chosenBase);
+        // All available base types for "Try it as"
+        const alts = baseTypes;
 
         return { size, chosenBase, temp, alts };
     }, []);
@@ -176,7 +176,7 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
                                     </div>
                                     {alts.length > 0 && (
                                         <div className="mt-2 text-[11px] text-gray-500 font-medium px-1">
-                                            Also works as: {altsText}
+                                            Recommended as: {altsText}
                                         </div>
                                     )}
                                 </>
