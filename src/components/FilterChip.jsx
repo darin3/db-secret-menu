@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function FilterChip({ active, inactive, color, onClick, label, icon: Icon }) {
+export default function FilterChip({ active, inactive, color, activeBg, onClick, label, icon: Icon }) {
     return (
         <button
             onClick={onClick}
@@ -12,7 +12,7 @@ export default function FilterChip({ active, inactive, color, onClick, label, ic
       `}
             style={{
                 borderColor: active ? color : '#333',
-                backgroundColor: active ? `${color}22` : 'transparent',
+                backgroundColor: active ? (activeBg || `${color}22`) : 'transparent',
                 color: active ? color : '#888',
             }}
         >

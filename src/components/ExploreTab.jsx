@@ -116,7 +116,8 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
                         <FilterChip
                             active={selBase === 'coffee'}
                             inactive={selBase !== null && selBase !== 'coffee'}
-                            color="#A67C52"
+                            color="#CCC"
+                            activeBg="rgba(255,255,255,0.07)"
                             onClick={() => setSelBase(selBase === 'coffee' ? null : 'coffee')}
                             label="Latte / Chai / Cocoa"
                             icon={CoffeeIcon}
@@ -124,7 +125,8 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
                         <FilterChip
                             active={selBase === 'rebel'}
                             inactive={selBase !== null && selBase !== 'rebel'}
-                            color="#C084FC"
+                            color="#CCC"
+                            activeBg="rgba(255,255,255,0.07)"
                             onClick={() => setSelBase(selBase === 'rebel' ? null : 'rebel')}
                             label="Rebel / Lemonade / Tea / Soda"
                             icon={Palmtree}
@@ -136,17 +138,30 @@ export default function ExploreTab({ initialFlavors, onInitialFlavorsConsumed, r
                     <div className="flex items-center gap-2 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
                         <Filter size={14} /> Vibes
                     </div>
-                    <div className="flex flex-wrap gap-1">
-                        {ACTIVE_VIBES.map(v => (
-                            <FilterChip
-                                key={v}
-                                active={selVibes.includes(v)}
-                                inactive={selVibes.length > 0 && !selVibes.includes(v)}
-                                color={VIBE_META[v].color}
-                                onClick={() => toggle(selVibes, setSelVibes, v)}
-                                label={VIBE_META[v].label}
-                                icon={VIBE_ICONS[v]}
-                            />
+                    <div className="flex flex-wrap items-center gap-2">
+                        {[
+                            ["tropical", "fruity"],
+                            ["fusion"],
+                            ["indulgent", "sweet", "cozy"]
+                        ].map((group, groupIdx, arr) => (
+                            <React.Fragment key={groupIdx}>
+                                <div className="flex flex-wrap gap-1">
+                                    {group.map(v => (
+                                        <FilterChip
+                                            key={v}
+                                            active={selVibes.includes(v)}
+                                            inactive={selVibes.length > 0 && !selVibes.includes(v)}
+                                            color={VIBE_META[v].color}
+                                            onClick={() => toggle(selVibes, setSelVibes, v)}
+                                            label={VIBE_META[v].label}
+                                            icon={VIBE_ICONS[v]}
+                                        />
+                                    ))}
+                                </div>
+                                {groupIdx < arr.length - 1 && (
+                                    <div className="h-6 w-px bg-white/10 mx-1" />
+                                )}
+                            </React.Fragment>
                         ))}
                     </div>
                 </div>

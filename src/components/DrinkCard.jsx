@@ -26,8 +26,8 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
     const vm = VIBE_META[vibe] || VIBE_META.sweet;
     const Icon = VIBE_ICONS[vibe] || Candy;
     const avail = getDrinkAvail(drink);
-    const displayFlavors = useMemo(() => [...drink.flavors].sort(), [drink.flavors]);
-    const displayToppings = useMemo(() => [...(drink.toppings || [])].sort(), [drink.toppings]);
+    const displayFlavors = drink.flavors;
+    const displayToppings = drink.toppings || [];
 
     const orderExample = useMemo(() => {
         const hasChai = drink.flavors.includes(F.CHAI) || (drink.toppings || []).includes(T.CHAI);
