@@ -39,11 +39,16 @@ export default function DrinkCard({ drink, open = false, onToggle }) {
         } else if (hasWhiteCoffee) {
             baseTypes = ["white coffee latte", "white coffee freeze", "white coffee shake", "white coffee chai", "white coffee cold brew"];
         } else if (vibe === "fusion") {
-            const baseCategory = getDrinkBaseCategory(drink);
-            if (baseCategory === "rebel") {
-                baseTypes = ["rebel", "freeze", "iced lemonade"];
+            const hasAnyFruit = drink.flavors.some(f => f.includes("Any Fruit"));
+            if (hasAnyFruit) {
+                baseTypes = ["rebel", "soda", "shake"];
             } else {
-                baseTypes = ["latte", "freeze", "rebel", "iced lemonade"];
+                const baseCategory = getDrinkBaseCategory(drink);
+                if (baseCategory === "rebel") {
+                    baseTypes = ["rebel", "soda", "shake", "freeze"];
+                } else {
+                    baseTypes = ["latte", "freeze", "shake", "rebel", "soda"];
+                }
             }
         } else if (["cozy", "indulgent", "sweet"].includes(vibe)) {
             baseTypes = ["latte", "freeze", "shake", "cold brew", "chai"];

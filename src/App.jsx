@@ -73,7 +73,7 @@ export default function App() {
             Dutch Bros Secret Menu
           </h1>
           <p className="text-gray-400 text-sm sm:text-base font-medium max-w-xl mx-auto mb-8">
-            Discover <span className="text-blue-400 font-black">{DRINKS.length}</span> secret flavor combos, find your new favorite, or roll the dice.
+            Discover <span className="text-blue-400 font-black">{DRINKS.length}</span> flavor combos, find your new favorite, or roll the dice.
           </p>
 
           {/* Navigation */}
